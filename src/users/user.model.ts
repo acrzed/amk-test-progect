@@ -13,7 +13,7 @@ export class User {
   @Prop({ require: true, type: String, minlength: 6 })
   password: string;
   @ApiProperty({example:'ADMIN', description:'Роли пользователя - допуск, ограничение, etc.'})
-  @Prop({ type: String,  ref: 'Roles', default: 'USER'})
+  @Prop({ type: [],  ref: 'Roles', default: 'USER'})
   roles: [];
 }
 
