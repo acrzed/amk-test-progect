@@ -23,6 +23,11 @@ export class UsersService {
 
   }
 
+  async getUserByName(qwr: string){
+    const user = await this.userRepo.findOne({ name: qwr })
+    return user
+  }
+
   // async createUser(dto: CreateUserDto): Promise<User> {
   //   const user = await this.userRepo.create(dto)
   //   return user.save()
