@@ -16,8 +16,8 @@ export class User {
   @Prop({ require: true, type: String, minlength: 6 })
   password: string;
   @ApiProperty({example:'ADMIN', description:'Роли пользователя - допуск, ограничение, etc.'})
-  @Prop({ type: [],  ref: 'Roles', default: 'USER'})
-  roles: [];
+  @Prop({ ref: 'Roles', default: 'USER'})
+  roles: [string, string,string];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
