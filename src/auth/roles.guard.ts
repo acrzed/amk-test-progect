@@ -36,7 +36,7 @@ export class RolesGuard implements CanActivate {
       const token = authHeader.split(' ')[1]
 
       if(bearer !== 'Bearer' || !token){
-        throw new HttpException({message:'Неврный токен доступа'}, HttpStatus.FORBIDDEN)
+        throw new HttpException({message:'Неверный токен доступа'}, HttpStatus.FORBIDDEN)
       }
       const user = this.jwtService.verify(token)
       req.user = user
@@ -45,6 +45,4 @@ export class RolesGuard implements CanActivate {
       console.log(e)
       throw new HttpException({message: `Нет доступа, обратитесь к администратору`}, HttpStatus.FORBIDDEN)
     }
-
-    // throw new Error('Method not implemented.');
   }}

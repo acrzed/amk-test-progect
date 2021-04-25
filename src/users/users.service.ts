@@ -14,19 +14,18 @@ export class UsersService {
 
   async createUser(dto: CreateUserDto): Promise<User> {
     try {
-      const user = new this.userRepo(dto)
-      const role = await this.roleService.getRoleByValue('USER')
-      await user.$set('roles',[role.value])
-      return user.save()
+      const user = new this.userRepo(dto);
+      const role = await this.roleService.getRoleByValue('USER');
+      await user.$set('roles', [role.value]);
+      return user.save();
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
 
   }
 
-  async getUserByName(qwr: string){
-    const user = await this.userRepo.findOne({ name: qwr })
-    return user
+  async getUserByName(qwr: string) {
+    return this.userRepo.findOne({ name: qwr });
   }
 
   // async createUser(dto: CreateUserDto): Promise<User> {
@@ -35,23 +34,23 @@ export class UsersService {
   // }
 
   async getAllUsers(): Promise<User[]> {
-    return this.userRepo.find().exec()
+    return this.userRepo.find().exec();
   }
 
-  async addRole(dto: AddRoleDto){
-    const user = await this.userRepo.findById(dto.userId)
-    const role = await this.roleService.getRoleByValue(dto.value)
-      if(role && user){
-        const { value } = role
-        user.roles.push(value)
-        user.save()
-        console.log(user.roles)
-        // await user.add('role',role.value)
-        // arr.push(add)
-        // user.roles.push({ role });
-        return dto
-      }
-      throw new HttpException({message:'Не найдена роль или пользователь'}, HttpStatus.NOT_FOUND)
+  async addRole(dto: AddRoleDto) {
+    const user = await this.userRepo.findById(dto.userId);
+    const role = await this.roleService.getRoleByValue(dto.value);
+    if (role && user) {
+      const { value } = role;
+      user.roles.push(value);
+      user.save();
+      console.log(user.roles);
+      // await user.add('role',role.value)
+      // arr.push(add)
+      // user.roles.push({ role });
+      return dto;
+    }
+    throw new HttpException({ message: 'Не найдена роль или пользователь' }, HttpStatus.NOT_FOUND);
   }
 
 }
