@@ -7,6 +7,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/role-auth.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { AddRoleDto } from './dto/add-role.dto';
+import { UserRoles } from '../roles/user-roles.model';
 
 @ApiTags('Пользователи системы CRM')
 @Controller('users')
@@ -14,14 +15,6 @@ export class UsersController {
 
   constructor(private userService: UsersService) {
   }
-
-  @ApiOperation({ summary: 'Создание пользователя' })
-  @ApiResponse({ status: 200, type: User })
-  @Post()
-  create(@Body() userDto: CreateUserDto) {
-    return this.userService.createUser(userDto);
-  }
-
   @ApiOperation({ summary: 'Все пользователи' })
   @ApiResponse({ status: 200, type: [User] })
   // @UseGuards(JwtAuthGuard)
@@ -32,8 +25,15 @@ export class UsersController {
     return this.userService.getAllUsers();
   }
 
+  @ApiOperation({ summary: 'Создание пользователя' })
+  @ApiResponse({ status: 200, type: User })
+  @Post()
+  create(@Body() userDto: CreateUserDto) {
+    return this.userService.createUser(userDto);
+  }
+
   @ApiOperation({ summary: 'Назначить роль' })
-  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: 200 , type: UserRoles})
   // @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)

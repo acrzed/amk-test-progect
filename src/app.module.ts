@@ -4,6 +4,9 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from './roles/roles.module';
 import { AuthModule } from './auth/auth.module';
+import { MaterialsModule } from './materials/materials.module';
+import { CategoryMaterialModule } from './category-mat/category-material.module';
+import { CategoryUslModule } from './category-usl/category-usl.module';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     RolesModule,
     AuthModule,
+    MaterialsModule,
+    CategoryMaterialModule,
+    CategoryUslModule,
   ],
   controllers: [],
   providers: [],

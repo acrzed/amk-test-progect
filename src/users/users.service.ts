@@ -21,14 +21,13 @@ export class UsersService {
     } catch (e) {
       console.log(e);
     }
-
-  }
+}
 
   async getUserByName(qwr: string) {
     return this.userRepo.findOne({ name: qwr });
   }
 
-  // async createUser(dto: CreateUserDto): Promise<User> {
+  // async createMaterial(dto: CreateUserDto): Promise<CatUsl> {
   //   const user = await this.userRepo.create(dto)
   //   return user.save()
   // }
