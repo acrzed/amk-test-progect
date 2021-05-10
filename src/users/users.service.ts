@@ -27,7 +27,7 @@ export class UsersService {
     return this.userRepo.findOne({ name: qwr });
   }
 
-  // async createMaterial(dto: CreateUserDto): Promise<CatUsl> {
+  // async createMaterial(dto: CreateUserDto): Promise<CategoryUslug> {
   //   const user = await this.userRepo.create(dto)
   //   return user.save()
   // }

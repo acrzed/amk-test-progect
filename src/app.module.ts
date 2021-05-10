@@ -5,8 +5,9 @@ import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from './roles/roles.module';
 import { AuthModule } from './auth/auth.module';
 import { MaterialsModule } from './materials/materials.module';
-import { CategoryMaterialModule } from './category-mat/category-material.module';
-import { CategoryUslModule } from './category-usl/category-usl.module';
+import { CategoryMaterialModule } from './category-material/category-material.module';
+import { CategoryUslugModule } from './category-uslug/category-uslug.module';
+import { UslugyModule } from './uslugy/uslugy.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { CategoryUslModule } from './category-usl/category-usl.module';
     AuthModule,
     MaterialsModule,
     CategoryMaterialModule,
-    CategoryUslModule,
+    CategoryUslugModule,
+    UslugyModule,
   ],
   controllers: [],
   providers: [],
