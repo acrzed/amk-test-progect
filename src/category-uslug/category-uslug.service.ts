@@ -13,8 +13,10 @@ export class CategoryUslugService {
 
   async create(dto: CreateCategoryUslugDto): Promise<CategoryUslug> {
     try {
-      const category = new this.categoryUslugRepo(dto);
-      return category.save();
+      console.log(
+        `Создана категория услуг - ${dto.name}, 
+         описание - ${dto.note}`)
+      return new this.categoryUslugRepo(dto).save();
     } catch (e) {
       console.log(e);
     }
@@ -26,6 +28,5 @@ export class CategoryUslugService {
 
   async getCategoryByName(name: string) {
     return this.categoryUslugRepo.findOne({ name });
-
   }
 }

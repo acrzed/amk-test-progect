@@ -13,8 +13,10 @@ export class CategoryMaterialService {
   }
   async create(dto: CreateCategoryMaterialDto): Promise<CategoryMaterial> {
     try {
-      const category = new this.categoryMaterialRepo(dto);
-      return category.save();
+      console.log(
+        `Создана категория материалов - ${dto.name}, 
+         описание - ${dto.note}`)
+      return new this.categoryMaterialRepo(dto).save();
     } catch (e) {
       console.log(e);
     }
