@@ -12,8 +12,14 @@ export class User {
   @ApiProperty({ example: 'Ivan', description: 'имя пользователя' })
   @Prop({ require: true, unique: true, type: String })
   name: string;
-  @ApiProperty({ example: '********', description: 'пароль не менее 6 символов' })
-  @Prop({ require: true, type: String, minlength: 6 })
+  @ApiProperty({ example: '093********', description: 'телефон' })
+  @Prop({ type: Number, minlength: 10 })
+  phone: number;
+  @ApiProperty({ example: 'SELLER', description: 'Отдел - продажа, производство, технический, административный и т.д.' })
+  @Prop({ ref: 'Dept', default: 'STAFF' })
+  dept: [string, string, string];
+  @ApiProperty({ example: '********', description: 'пароль не менее 8 символов, обязателен для админов и отдела продаж' })
+  @Prop({ type: String, minlength: 8 })
   password: string;
   @ApiProperty({ example: 'ADMIN', description: 'Роли пользователя - допуск, ограничение, etc.' })
   @Prop({ ref: 'Roles', default: 'USER' })

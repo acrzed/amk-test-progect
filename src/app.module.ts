@@ -4,17 +4,14 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from './roles/roles.module';
 import { AuthModule } from './auth/auth.module';
-import { MaterialsModule } from './materials/materials.module';
-import { CategoryMaterialModule } from './category-material/category-material.module';
-import { CategoryUslugModule } from './category-uslug/category-uslug.module';
-import { UslugyModule } from './uslugy/uslugy.module';
+
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env'
     }),
-    MongooseModule.forRoot('mongodb://localhost/CRM', {
+    MongooseModule.forRoot('mongodb+srv://acridzed:GHYEgbSyEv3dsENw@amkcrm.jeeyu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
@@ -22,12 +19,19 @@ import { UslugyModule } from './uslugy/uslugy.module';
     UsersModule,
     RolesModule,
     AuthModule,
-    MaterialsModule,
-    CategoryMaterialModule,
-    CategoryUslugModule,
-    UslugyModule,
   ],
   controllers: [],
   providers: [],
 })
 export class AppModule {}
+
+/*
+const { MongoClient } = require('mongodb');
+const uri = "mongodb+srv://acridzed:EMk$3@is_BG9@cluster0.crtsi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+client.connect(err => {
+  const collection = client.db("test").collection("devices");
+  // perform actions on the collection object
+  client.close();
+});
+*/
