@@ -13,7 +13,9 @@ async function start() {
     .build()
   const sysDoc = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('/api/doc', app, sysDoc)
-  await app.listen(PORT, () => console.log('Сервер запущен на порту ', PORT));
+  await app.listen(PORT,
+    () => console.log('Сервер запущен на порту ', PORT))
+
 }
 
 start();
