@@ -38,11 +38,17 @@ export class RolesGuard implements CanActivate {
       if(bearer !== 'Bearer' || !token){
         throw new HttpException({message:'Неверный токен доступа'}, HttpStatus.FORBIDDEN)
       }
-      const user = this.jwtService.verify(token)
-      req.user = user
-      return user.roles.some(role => requiredRoles.includes(role))
+      try {
+        const user = this.jwtService.verify(token)
+        req.user = user
+        return user.role.some(roles => requiredRoles.includes(roles))
+      }catch (e) {
+        //console.log(e)
+        throw new HttpException({message:'Неверный токен доступа'}, HttpStatus.FORBIDDEN)
+      }
+
     } catch (e) {
-      console.log(e)
+      //console.log(e)
       throw new HttpException({message: `Нет доступа, обратитесь к администратору`}, HttpStatus.FORBIDDEN)
     }
   }}

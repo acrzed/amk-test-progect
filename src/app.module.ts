@@ -4,7 +4,10 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from './roles/roles.module';
 import { AuthModule } from './auth/auth.module';
-import { DeptsModule } from './depts/depts.module';
+import { DepartsModule } from './departs/departs.module';
+import { ClientsModule } from './clients/clients.module';
+import { OrdersModule } from './orders/orders.module';
+
 
 
 @Module({
@@ -21,8 +24,10 @@ import { DeptsModule } from './depts/depts.module';
     UsersModule,
     RolesModule,
     AuthModule,
-    DeptsModule,
-  ],
+    DepartsModule,
+    ClientsModule,
+    OrdersModule,
+],
   controllers: [],
   providers: [],
 })

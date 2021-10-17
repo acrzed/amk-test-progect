@@ -1,10 +1,8 @@
-import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory  } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { Dept } from '../depts/dept.model';
-
-
+import { Depart } from '../departs/depart.model';
 
 export type UserDocument = User & Document
 
@@ -16,17 +14,20 @@ export class User {
   @Prop({ require: true, unique: true, type: String })
   name: string;
   @ApiProperty({ example: '093********', description: 'телефон пользователя' })
-  @Prop({ type: Number, minlength: 10 })
-  phone: number;
+  @Prop({ type: [Number], minlength: 10 })
+  phone: [number, number, number];
   @ApiProperty({ example: '61688b4999c6f111736775f6', description: 'ID подразделения' })
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'dept', default: '61688b4999c6f111736775f6' })
-  dept:  string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Depart', default: '61688b4999c6f111736775f6' })
+  depart:  Depart;
   @ApiProperty({ example: '********', description: 'пароль не менее 8 символов, обязателен для админов и отдела продаж' })
   @Prop({ type: String, minlength: 8 })
   password: string;
   @ApiProperty({ example: 'ADMIN', description: 'Роли пользователя - допуск, ограничение, etc.' })
   @Prop({ ref: 'Roles', default: 'USER' })
   roles: [string, string, string];
+  @ApiProperty({ example: 'лучший продажник', description: 'комментарий, описание' })
+  @Prop({ type: String })
+  description: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
