@@ -22,6 +22,9 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AddPhoneDto } from './dto/add-phone.dto';
 import { RemovePhoneDto } from './dto/remove-phone.dto';
 import { AddChannelDto } from './dto/add-channel.dto';
+import { AddOrderDto } from './dto/add-order.dto';
+import { RemoveOrderDto } from './dto/remove-order.dto';
+import { RemoveChannelDto } from './dto/remove-channel.dto';
 
 @ApiTags('Клиенты (Покупатели))')
 @Controller('clients')
@@ -65,8 +68,19 @@ export class ClientsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
+  updateClient(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
     return this.clientsService.update(+id, updateClientDto);
+  }
+
+  @ApiOperation({ summary: 'Удаление клиента' ,description:'Точка доступа для удаления клиента, доступ только для админов и отдела продаж' })
+  @ApiResponse({ status: 200, type: Client })
+  @UsePipes(ValidationPipe)
+  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN', 'SELLER')
+  @UseGuards(RolesGuard)
+  @Delete('del/:id')
+  removeClient(@Param('id') id: string) {
+    return this.clientsService.removeClient(id);
   }
 
   @ApiOperation({ summary: 'Добавить новый номер телефона клиента' ,description:'Точка доступа для добавления новых номеров телефона клиента, доступ только для админов и отдела продаж' })
@@ -80,6 +94,17 @@ export class ClientsController {
     return this.clientsService.addClientPhone(addPhone);
   }
 
+  @ApiOperation({ summary: 'Удалить номер телефона клиента' ,description:'Точка доступа для удаления номера телефона клиента, доступ только для админов и отдела продаж' })
+  @ApiResponse({ status: 200, type: Client })
+  @UsePipes(ValidationPipe)
+  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN', 'SELLER')
+  @UseGuards(RolesGuard)
+  @Delete('/phone')
+  removeClientPhone(@Body() removePhone: RemovePhoneDto) {
+    return this.clientsService.removeClientPhone(removePhone);
+  }
+
   @ApiOperation({ summary: 'Добавить новый канал клиента' ,description:'Точка доступа для добавления новых каналов коммуникации с клиентом, доступ только для админов и отдела продаж' })
   @ApiResponse({ status: 200, type: Client })
   @UsePipes(ValidationPipe)
@@ -91,25 +116,17 @@ export class ClientsController {
     return this.clientsService.addChannel(addChannel);
   }
 
-  @ApiOperation({ summary: 'Добавить новый номер телефона клиента' ,description:'Точка доступа для добавления новых номеров телефона клиента, доступ только для админов и отдела продаж' })
+  @ApiOperation({ summary: 'Удаление канала клиента' ,description:'Точка доступа для удаления клиента, доступ только для админов и отдела продаж' })
   @ApiResponse({ status: 200, type: Client })
   @UsePipes(ValidationPipe)
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN', 'SELLER')
   @UseGuards(RolesGuard)
-  @Delete('/phone')
-  removeClientPhone(@Body() removePhone: RemovePhoneDto) {
-    return this.clientsService.removeClientPhone(removePhone);
+  @Delete('/channel/del')
+  removeClientChannel(@Body() dto: RemoveChannelDto) {
+    return this.clientsService.removeChannel(dto);
   }
 
-  @ApiOperation({ summary: 'Удаление клиента' ,description:'Точка доступа для удаления клиента, доступ только для админов и отдела продаж' })
-  @ApiResponse({ status: 200, type: Client })
-  @UsePipes(ValidationPipe)
-  @UseGuards(JwtAuthGuard)
-  @Roles('ADMIN', 'SELLER')
-  @UseGuards(RolesGuard)
-  @Delete(':id')
-  removeClient(@Param('id') id: string) {
-    return this.clientsService.remove(id);
-  }
+
+
 }

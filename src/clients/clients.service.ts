@@ -1,19 +1,27 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Client, ClientDocument } from './entities/client.entity';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Client, ClientDocument } from './entities/client.entity';
-import { Model } from 'mongoose';
-import { Channel, ChannelDocument } from './entities/channel.entity';
 import { AddPhoneDto } from './dto/add-phone.dto';
 import { RemovePhoneDto } from './dto/remove-phone.dto';
+import { Channel, ChannelDocument } from './entities/channel.entity';
 import { AddChannelDto } from './dto/add-channel.dto';
+import { Order, OrderDocument } from '../orders/entities/order.entity';
+import { AddOrderDto } from './dto/add-order.dto';
+import { Trash, TrashDocument } from './entities/trash.entity';
+import { RemoveOrderDto } from './dto/remove-order.dto';
+import { RemoveChannelDto } from './dto/remove-channel.dto';
+
 
 @Injectable()
 export class ClientsService {
   constructor(
     @InjectModel(Client.name) private clientDB: Model<ClientDocument>,
-    @InjectModel(Channel.name) private channelDB: Model<ChannelDocument>
+    @InjectModel(Channel.name) private channelDB: Model<ChannelDocument>,
+    @InjectModel(Trash.name) private trashDB: Model<TrashDocument>,
+    @InjectModel(Order.name) private ordertDB: Model<OrderDocument>
   ) {
   }
 
@@ -41,7 +49,9 @@ export class ClientsService {
   async findOne(id: string) {
     try {
       if(id.length === 24){
-        const client = await this.clientDB.findById( id ).populate('channel');
+        const client = await this.clientDB.findById( id )
+          .populate('channel')
+          .populate('order');
         if(client){
           return client
         }
@@ -58,7 +68,7 @@ export class ClientsService {
   }
 
   // `This action removes a #${id} client`
-  async remove(id: string) {
+  async removeClient(id: string) {
     try {
       if(id.length === 24){
         const client = await this.clientDB.findByIdAndDelete( id );
@@ -108,12 +118,19 @@ export class ClientsService {
         return `У клиента ${client.name} не найден номер телефона ${phone}`
       }
       client.$set('phone', newArrPhone);
-      client.save()
+      client.save().then(() => {
+        const { idCreator, desc } = removePhoneDto
+        const trash = new this.trashDB({...removePhoneDto, idCreator: idCreator, desc: desc})
+        trash.save()
+      } )
       return client
     }
   }
 
   async addChannel(dto: AddChannelDto): Promise<Client> {
+    if (String(dto.idClient).length != 24){
+      throw new HttpException({ message: 'Ошибка - неверный ID пользователя!' }, HttpStatus.NOT_FOUND);
+    }
     const client = await this.clientDB.findById(dto.idClient)
     const channel = await this.channelDB.create({...dto})
     client.channel.push(channel._id)
@@ -121,6 +138,72 @@ export class ClientsService {
     return client
   }
 
+  async addOrder(dto: AddOrderDto): Promise<Client> {
+    const client = await this.clientDB.findById(dto.idClient);
+    const { orderSum } = dto;
+    const { indPay } = dto;
+    const { orderSale } = dto;
+    let total: number = +orderSum;
+    if ( indPay ){
+      total = total + +indPay;
+    }
+    if ( orderSale ){
+      total = total - +orderSale;
+    }
+    const order = new this.ordertDB({ ...dto, orderTotal: total })
+    client.order.push(order._id)
+    await client.save()
+    return client
+  }
+
+  async removeOrder(dto: RemoveOrderDto): Promise<Client>{
+    const { idOrder } = dto;
+    let order = await this.ordertDB.findById(idOrder);
+    if (!order){
+      throw new HttpException({ message: `Ошибка - заказ с ID #${idOrder} не найден!` }, HttpStatus.NOT_FOUND);
+    }
+    let idClient = order.idClient;
+    let basket = order.basket;
+    const client = await this.clientDB.findById(idClient);
+    let delOrderClientIndex = client.order.indexOf(idOrder)
+    if (delOrderClientIndex < 0){
+      throw new HttpException({ message: `Ошибка - у клиента ${client.name} заказ с ID #${idOrder} не найден!` }, HttpStatus.NOT_FOUND);
+    }
+    client.order.splice(delOrderClientIndex, 1);
+
+      await this.ordertDB.findByIdAndDelete(idOrder);
+    client.save()
+      .then(()=>{
+        const trash = new this.trashDB({ ...dto, idClient: idClient, basket: basket })
+        trash.save()
+        })
+    return client
+  }
+
+  async removeChannel(dto: RemoveChannelDto): Promise<Client>{
+    try {
+      const { idChannel } = dto;
+      let channel = await this.channelDB.findById(idChannel);
+      let idClient = channel.idClient;
+      const client = await this.clientDB.findById(idClient);
+      let delChannelClientIndex = client.channel.indexOf(idChannel)
+      if (delChannelClientIndex < 0){
+        throw new HttpException({ message: `Ошибка - у клиента ${client.name} канал с ID #${idChannel} не найден!` }, HttpStatus.NOT_FOUND);
+      }
+      client.channel.splice(delChannelClientIndex, 1);
+
+      await this.channelDB.findByIdAndDelete(idChannel);
+      client.save()
+        .then(()=>{
+          const trash = new this.trashDB(dto)
+          trash.save()
+        })
+      return client
+    }catch (e) {
+      console.log(e)
+    }
+
+  }
 
 }
 

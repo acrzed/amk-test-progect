@@ -5,6 +5,7 @@ import * as mongoose from 'mongoose';
 
 import { User } from '../../users/user.model';
 import { Channel } from './channel.entity' ;
+import { Order } from '../../orders/entities/order.entity';
 
 
 export type ClientDocument = Client & Document
@@ -28,6 +29,9 @@ export class Client {
   @ApiProperty({ example: 'Ivan', description: 'имя клиента' })
   @Prop({ type: String })
   name: string;
+  @ApiProperty({ example: 'Заказы клиента', description: 'все заказы клиента' })
+  @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Order'}] })
+  order: Order[];
   @ApiProperty({ example: 'очень нудный, петляй сразу', description: 'комментарий, описание' })
   @Prop({ type: String })
   desc: string
