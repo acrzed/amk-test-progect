@@ -9,6 +9,8 @@ import { Channel, ChannelSchema } from './entities/channel.entity';
 import { Order, OrderSchema } from '../orders/entities/order.entity';
 import { Trash, TrashSchema } from './entities/trash.entity';
 import { ClientsOrdersController } from './clientOrders.controller';
+import { ClientsOrderService } from './clientsOrder.service';
+import { OrdersModule } from '../orders/orders.module';
 
 @Module({
   imports: [
@@ -19,11 +21,14 @@ import { ClientsOrdersController } from './clientOrders.controller';
       { name: Trash.name, schema: TrashSchema },
       { name: Client.name, schema: ClientSchema }
       ]),
+    OrdersModule,
     forwardRef(() => AuthModule)],
   controllers: [
     ClientsController,
     ClientsOrdersController],
-  providers: [ClientsService],
+  providers: [
+    ClientsService,
+    ClientsOrderService],
   exports: [ClientsService]
 })
 export class ClientsModule {}
