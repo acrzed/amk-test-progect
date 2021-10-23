@@ -25,6 +25,5 @@ export class RemovePhoneDto {
   @ApiProperty({ example: 'комментарий', description: 'причина, заметки, описание' })
   @Length(5, 600, {message: 'требуется комментарий - причина удаления'})
   @Prop({ require: true, type: String })
-
   readonly desc: string
 }

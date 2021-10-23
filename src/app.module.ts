@@ -4,9 +4,11 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from './roles/roles.module';
 import { AuthModule } from './auth/auth.module';
-import { DepartsModule } from './departs/departs.module';
+import { DepartsModule } from './users/departs/departs.module';
 import { ClientsModule } from './clients/clients.module';
-import { OrdersModule } from './orders/orders.module';
+import { OrdersModule } from './clients/orders/orders.module';
+import { TrashsModule } from './trashs/trashs.module';
+import { ChannelNamesModule } from './channel-names/channel-names.module';
 
 
 
@@ -27,6 +29,8 @@ import { OrdersModule } from './orders/orders.module';
     DepartsModule,
     ClientsModule,
     OrdersModule,
+    TrashsModule,
+    ChannelNamesModule,
 ],
   controllers: [],
   providers: [],

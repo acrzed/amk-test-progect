@@ -1,6 +1,19 @@
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { UseGuards, UsePipes, Body, Controller, Param, Get, Patch, Post, HttpException, HttpStatus, ValidationPipe } from '@nestjs/common';
+import {
+  UseGuards,
+  UsePipes,
+  Body,
+  Controller,
+  Param,
+  Get,
+  Patch,
+  Post,
+  HttpException,
+  HttpStatus,
+  ValidationPipe,
+  Delete,
+} from '@nestjs/common';
 
 import { UsersService } from './users.service';
 import { UserCreateDto } from './dto/user-create.dto';
@@ -9,8 +22,9 @@ import { Roles } from '../auth/role-auth.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { RoleAddDto } from './dto/role-add.dto';
 import { DepartUpdateDto } from './dto/depart-update.dto';
-import { Client } from '../clients/entities/client.entity';
-import { AddPhoneDto } from '../clients/dto/add-phone.dto';
+import { RemoveUserDto } from './dto/remove-user.dto';
+import { ObjectId } from 'mongoose';
+
 
 @ApiTags('Пользователи системы CRM')
 @Controller('users')
@@ -30,50 +44,51 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Получить запись пользователя по его имени', description:'Точка доступа для получения записи пользователя по его имени , доступ ограничен, только для пользователей с ролью - ADMIN' })
   @ApiResponse({ status: 200, type: [User] })
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
-  @Get(':name')
+  @Get('name/:name')
   getByName(@Param('name') name: string) {
     return this.userService.getUserByName(name);
   }
 
   @ApiOperation({ summary: 'Получить запись пользователя по ID', description:'Точка доступа для получения записи пользователя по ID , доступ ограничен, только для пользователей с ролью - ADMIN' })
-  @ApiResponse({ status: 200, type: [User] })
-  //@UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, type: User })
+  @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
-  @Get('id/:id')
-  async getByID(@Param('id') id: string) {
-    if (id.length === 24){
+  @Get(':id')
+  async getByID(@Param('id') id: ObjectId) {
+    console.log('user by ID')
       return await this.userService.getUserByID(id);
-    }
-    throw new HttpException({ message: 'Неверный ID' }, HttpStatus.NOT_FOUND);
   }
-
 
   @ApiOperation({ summary: 'Создание пользователя' ,description:'Точка доступа для создания пользователя, доступ неограничен' })
   @ApiResponse({ status: 200, type: User })
   @UsePipes(ValidationPipe)
+  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
   @Post()
-  async create(@Body() dto: UserCreateDto) {
+  async createUser(@Body() dto: UserCreateDto) {
     return await this.userService.createUser(dto);
   }
 
-  @ApiOperation({ summary: 'Добавить новый номер телефона пользователя' ,description:'Точка доступа для добавления новых номеров телефона пользователя, доступ только для админов и отдела продаж' })
-  @ApiResponse({ status: 200, type: Client })
+  @ApiOperation({ summary: 'Удаление пользователя' ,description:'Точка доступа для удаления пользователя, доступ для админов' })
+  @ApiResponse({ status: 200, type: User })
   @UsePipes(ValidationPipe)
   @UseGuards(JwtAuthGuard)
-  @Roles('ADMIN', 'SELLER')
+  @Roles('ADMIN')
   @UseGuards(RolesGuard)
-  @Post('/phone')
-  addUserPhone(@Body() addPhone: AddPhoneDto): Promise<User> {
-    return this.userService.addUserPhone(addPhone);
+  @Delete()
+  removeUser(@Body() dto: RemoveUserDto) {
+    return this.userService.removeUser( dto );
   }
+
 
   @ApiOperation({ summary: 'Добавить пользователю роль' })
   @ApiResponse({ status: 200 })
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Post('/role')
@@ -83,7 +98,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Изменить подразделение пользователя' })
   @ApiResponse({ status: 200 })
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Patch('/dept')
@@ -93,4 +108,8 @@ export class UsersController {
     }
     throw new HttpException({ message: 'Неверный ID' }, HttpStatus.NOT_FOUND);
   }
+
+
+
+
 }

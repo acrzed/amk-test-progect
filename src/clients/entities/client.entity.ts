@@ -5,7 +5,7 @@ import * as mongoose from 'mongoose';
 
 import { User } from '../../users/user.model';
 import { Channel } from './channel.entity' ;
-import { Order } from '../../orders/entities/order.entity';
+import { Order } from '../orders/entities/order.entity';
 
 
 export type ClientDocument = Client & Document

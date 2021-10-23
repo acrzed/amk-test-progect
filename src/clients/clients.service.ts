@@ -8,10 +8,8 @@ import { AddPhoneDto } from './dto/add-phone.dto';
 import { RemovePhoneDto } from './dto/remove-phone.dto';
 import { Channel, ChannelDocument } from './entities/channel.entity';
 import { AddChannelDto } from './dto/add-channel.dto';
-import { Order, OrderDocument } from '../orders/entities/order.entity';
-import { AddOrderDto } from './dto/add-order.dto';
-import { Trash, TrashDocument } from './entities/trash.entity';
-import { RemoveOrderDto } from './dto/remove-order.dto';
+import { Order, OrderDocument } from './orders/entities/order.entity';
+import { Trash, TrashDocument } from '../trashs/entities/trash.entity';
 import { RemoveChannelDto } from './dto/remove-channel.dto';
 
 
@@ -142,9 +140,8 @@ export class ClientsService {
     try {
       const { idChannel } = dto;
       let channel = await this.channelDB.findById(idChannel);
-      let idClient = channel.idClient;
-      const client = await this.clientDB.findById(idClient);
-      let delChannelClientIndex = client.channel.indexOf(idChannel)
+      const client = await this.clientDB.findById(channel.idClient);
+      let delChannelClientIndex = client.channel.indexOf(channel)
       if (delChannelClientIndex < 0){
         throw new HttpException({ message: `Ошибка - у клиента ${client.name} канал с ID #${idChannel} не найден!` }, HttpStatus.NOT_FOUND);
       }

@@ -22,8 +22,6 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AddPhoneDto } from './dto/add-phone.dto';
 import { RemovePhoneDto } from './dto/remove-phone.dto';
 import { AddChannelDto } from './dto/add-channel.dto';
-import { AddOrderDto } from './dto/add-order.dto';
-import { RemoveOrderDto } from './dto/remove-order.dto';
 import { RemoveChannelDto } from './dto/remove-channel.dto';
 
 @ApiTags('Клиенты (Покупатели))')
@@ -89,7 +87,7 @@ export class ClientsController {
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN', 'SELLER')
   @UseGuards(RolesGuard)
-  @Post('/phone')
+  @Post('/phones')
   addClientPhone(@Body() addPhone: AddPhoneDto) {
     return this.clientsService.addClientPhone(addPhone);
   }
@@ -100,7 +98,7 @@ export class ClientsController {
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN', 'SELLER')
   @UseGuards(RolesGuard)
-  @Delete('/phone')
+  @Delete('/phones')
   removeClientPhone(@Body() removePhone: RemovePhoneDto) {
     return this.clientsService.removeClientPhone(removePhone);
   }
