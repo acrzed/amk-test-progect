@@ -58,9 +58,8 @@ export class UsersController {
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Get(':id')
-  async getByID(@Param('id') id: ObjectId) {
-    console.log('user by ID')
-      return await this.userService.getUserByID(id);
+  getByID(@Param('id') id: ObjectId) {
+      return this.userService.getUserByID(id);
   }
 
   @ApiOperation({ summary: 'Создание пользователя' ,description:'Точка доступа для создания пользователя, доступ неограничен' })

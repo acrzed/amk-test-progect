@@ -13,6 +13,7 @@ async function start() {
     .build()
   const sysDoc = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('/api/doc', app, sysDoc)
+  // app.useGlobalPipes(new ValidationPipe())
   await app.listen(PORT,
     () => console.log('Сервер запущен на порту ', PORT))
 

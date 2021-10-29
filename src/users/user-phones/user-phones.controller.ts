@@ -11,16 +11,19 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { UserPhonesService } from './user-phones.service';
-import { UpdateUserPhoneDto } from './dto/update-user-phone.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ObjectId } from 'mongoose';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { Roles } from '../../auth/role-auth.decorator';
 import { RolesGuard } from '../../auth/roles.guard';
+
+import { UserPhone } from './entities/user-phone.entity';
+import { UserPhonesService } from './user-phones.service';
+import { UpdateUserPhoneDto } from './dto/update-user-phone.dto';
 import { AddUserPhoneDto } from './dto/add-user-phone.dto';
 import { RemoveUserPhoneDto } from './dto/remove-user-phone.dto';
-import { UserPhone } from './entities/user-phone.entity';
-import { ObjectId } from 'mongoose';
+
+
 
 @ApiTags('Телефоны пользователей')
 @UsePipes(ValidationPipe)
@@ -42,12 +45,12 @@ export class UserPhonesController {
   }
 
   @ApiOperation({ summary: 'Все телефоны пользователей' ,description:'Точка доступа для получения всех номеров телефонов пользователей, доступ только для админов' })
-  @ApiResponse({ status: 200, type: UserPhone })
+  @ApiResponse({ status: 200, type: [UserPhone] })
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Get('/all')
-  findAllUserPhone() {
+  findAllUserPhone(): Promise<UserPhone[]> {
     return this.userPhonesService.findAllUserPhone();
   }
 
@@ -57,7 +60,7 @@ export class UserPhonesController {
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Get('id/:id')
-  findUserPhoneById(@Param('id') id: ObjectId) {
+  findUserPhoneById(@Param('id') id: ObjectId): Promise<UserPhone> {
     return this.userPhonesService.findUserPhoneById(id);
   }
 
@@ -67,17 +70,17 @@ export class UserPhonesController {
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Get('num/:number')
-  findOneUserPhone(@Param('number') number: number) {
+  findOneUserPhone(@Param('number') number: number): Promise<UserPhone> {
     return this.userPhonesService.findOneUserPhone(number);
   }
 
-  @ApiOperation({ summary: 'Телефон пользователя по номеру' ,description:'Точка доступа для получения телефона пользователей по номеру, доступ только для админов' })
+  @ApiOperation({ summary: 'Телефон пользователя по номеру', description:'Точка доступа для получения телефона пользователей по номеру, доступ только для админов' })
   @ApiResponse({ status: 200, type: UserPhone })
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Get('search/')
-  findUserPhone(@Query('any') any: any) {
+  findUserPhone(@Query('any') any: any): Promise<UserPhone> {
     return this.userPhonesService.findUserPhone(any);
   }
 
@@ -86,9 +89,9 @@ export class UserPhonesController {
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
-  @Patch()
-  updateUserPhone(@Body() updateUserPhoneDto: UpdateUserPhoneDto) {
-    return this.userPhonesService.updateUserPhone(updateUserPhoneDto);
+  @Patch(':id')
+  updateUserPhone(@Param('id') id: ObjectId, @Body() updateUserPhoneDto: UpdateUserPhoneDto): Promise<UserPhone> {
+    return this.userPhonesService.updateUserPhone(id, updateUserPhoneDto);
   }
 
   @ApiOperation({ summary: 'Удалить телефон пользователя' ,description:'Точка доступа для удаления телефона пользователя, доступ только для админов' })
@@ -96,8 +99,8 @@ export class UserPhonesController {
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
-  @Delete()
-  removeUserPhone(@Body() dto: RemoveUserPhoneDto) {
-    return this.userPhonesService.removeUserPhone(dto);
+  @Delete(':id')
+  removeUserPhone(@Param('id') id: ObjectId, @Body() dto: RemoveUserPhoneDto): Promise<UserPhone> {
+    return this.userPhonesService.removeUserPhone(id, dto);
   }
 }

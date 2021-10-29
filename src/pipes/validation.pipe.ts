@@ -9,7 +9,7 @@ export class ValidationPipe implements PipeTransform {
     const obj = plainToClass(metadata.metatype, value)
     const errors = await validate(obj)
     if (errors.length){
-      console.log(errors)
+      console.log('pipe \n',errors)
       let messages = errors.map(err => {
         return `${err.property} - ${Object.values(err.constraints).join(', ')}`
       })

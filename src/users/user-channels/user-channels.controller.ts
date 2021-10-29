@@ -21,6 +21,7 @@ import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/role-auth.decorator';
 import { RemoveUserChannelDto } from './dto/remove-user-channel.dto';
 import { Channel } from '../../clients/entities/channel.entity';
+import { UserChannel } from './entities/user-channel.entity';
 
 @ApiTags('Каналы пользователей')
 @UsePipes(ValidationPipe)
@@ -32,32 +33,32 @@ export class UserChannelsController {
   constructor(private readonly userChannelsService: UserChannelsService) {}
 
   @ApiOperation({ summary: 'Добавить новый канал пользователя' ,description:'Точка доступа для добавления новых каналов пользователя, доступ только для админов' })
-  @ApiResponse({ status: 200, type: Channel })
+  @ApiResponse({ status: 200, type: UserChannel })
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Post()
-  createChannel(@Body() createUserChannelDto: AddUserChannelDto) {
+  createChannel(@Body() createUserChannelDto: AddUserChannelDto): Promise<UserChannel> {
     return this.userChannelsService.addUserChannel(createUserChannelDto);
   }
 
   @ApiOperation({ summary: 'Все каналы пользователей' ,description:'Точка доступа для получения всех каналов пользователей, доступ только для админов' })
-  @ApiResponse({ status: 200, type: Channel })
+  @ApiResponse({ status: 200, type: [UserChannel] })
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Get()
-  findAll() {
+  findAll(): Promise<UserChannel[]> {
     return this.userChannelsService.findAllChannels();
   }
 
   @ApiOperation({ summary: 'Канал пользователя по нику' ,description:'Точка доступа для получения канала пользователя по нику, доступ только для админов' })
-  @ApiResponse({ status: 200, type: Channel })
+  @ApiResponse({ status: 200, type: UserChannel })
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Get('nick')
-  findChannelByName(@Query('nick') nick: string) {
+  findChannelByName(@Query('nick') nick: string){
     return this.userChannelsService.findChannelByNick(nick);
   }
 
@@ -71,7 +72,7 @@ export class UserChannelsController {
     return this.userChannelsService.findOneChannelByID(id);
   }
 
-  @ApiOperation({ summary: 'Обновить канал пользователя' ,description:'Точка доступа для добавления новых данных канала пользователя, доступ только для админов' })
+  @ApiOperation({ summary: 'Изменить канал пользователя' ,description:'Точка доступа для добавления новых данных канала пользователя, доступ только для админов' })
   @ApiResponse({ status: 200, type: Channel })
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
@@ -87,7 +88,7 @@ export class UserChannelsController {
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Delete(':id')
-  remove(@Param('id') id: ObjectId, @Body() dto: RemoveUserChannelDto) {
+  remove(@Param('id') id: ObjectId, @Body() dto: RemoveUserChannelDto): Promise<UserChannel> {
     return this.userChannelsService.removeChannel(id, dto);
   }
 }

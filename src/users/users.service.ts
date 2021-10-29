@@ -54,10 +54,14 @@ export class UsersService {
 }
 
   async getUserByName(name: string) {
-    return this.userDB.findOne({ name: name })
-      .populate('depart')
-      .populate('phones')
-      .populate('channels');
+    try {
+      return this.userDB.findOne({ name: name })
+        .populate('depart')
+        .populate('phones')
+        .populate('channels');
+    }catch (e) {
+      console.log(e)
+    }
   }
 
   async getUserByID(id: ObjectId): Promise<User> {
@@ -67,12 +71,10 @@ export class UsersService {
           .populate('depart')
           .populate('phones')
           .populate('channels');
-      }
-      throw new HttpException({ message: 'Пользователь не найден' }, HttpStatus.NOT_FOUND).message;
-
-    }catch (e) {
+      } }catch (e) {
       console.log(e)
     }
+    throw new HttpException({ message: 'Пользователь не найден' }, HttpStatus.NOT_FOUND)
   }
 
   async getAllUsers(): Promise<User[]> {
@@ -80,15 +82,15 @@ export class UsersService {
   }
 
   async removeUser(dto: RemoveUserDto): Promise<User> {
+    const { idRemoveUser, idCreator, desc } = dto
+    if (idRemoveUser == idCreator) {
+      throw new HttpException({ message: `Ошибка - невозможно удалить самого себя!` }, HttpStatus.CONFLICT);
+    }
+    const user = await this.userDB.findByIdAndDelete(idRemoveUser)
+    if (!user) {
+      throw new HttpException({ message: `Ошибка - пользователь с ID #${idRemoveUser} не найден!` }, HttpStatus.NOT_FOUND);
+    }
     try {
-      const { idRemoveUser, idCreator, desc } = dto
-      if (idRemoveUser == idCreator) {
-        throw new HttpException({ message: `Ошибка - невозможно удалить самого себя!` }, HttpStatus.CONFLICT);
-      }
-      const user = await this.userDB.findByIdAndDelete(idRemoveUser)
-      if (!user) {
-        throw new HttpException({ message: `Ошибка - пользователь с ID #${idRemoveUser} не найден!` }, HttpStatus.NOT_FOUND);
-      }
       for (let i = 0; i < user.phones.length; i++){
         let delPhone = await this.userPhonesDB.findByIdAndDelete(user.phones[i])
         if(delPhone){
@@ -122,30 +124,28 @@ export class UsersService {
           console.log(user.roles);
           return dto;
         }
-        throw new HttpException({ message: 'Не найдена роль или пользователь' }, HttpStatus.NOT_FOUND);
       }
     }catch (e) {
       console.log(e)
     }
+    throw new HttpException({ message: 'Не найдена роль или пользователь' }, HttpStatus.NOT_FOUND);
 
   }
 
   async updDept(dto: DepartUpdateDto) {
     try {
-      if(this.checkId(dto.userID)) {
+      if(mongoose.isValidObjectId(dto.userID)) {
         const user = await this.userDB.findById(dto.userID);
         const deptID = await this.departService.findByName(dto.dept);
         if(user && deptID){
           //const { name } = deptID;
           user.$set('depart', deptID)
           return user.save()
-        }
-        throw new HttpException({ message: 'Не найден отдел или пользователь' }, HttpStatus.NOT_FOUND);
-
-      }
+        } }
     }catch (e) {
       console.log(e)
     }
+    throw new HttpException({ message: 'Не найден отдел или пользователь' }, HttpStatus.NOT_FOUND);
 }
 
 

@@ -6,12 +6,14 @@ import { DepartsController } from './departs.controller';
 import { Depart, DepartSchema } from './depart.model';
 import { RolesModule } from '../../roles/roles.module';
 import { User, UserSchema } from '../user.model';
+import { Trash, TrashSchema } from '../../trashs/entities/trash.entity';
 
 
 @Module({
   imports:[MongooseModule.forFeature([
     { name: Depart.name, schema: DepartSchema },
     { name: User.name, schema: UserSchema },
+    { name: Trash.name, schema: TrashSchema },
   ]),
     RolesModule,
     forwardRef(() => AuthModule)
