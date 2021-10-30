@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { DepartsModule } from './users/departs/departs.module';
 import { ClientsModule } from './clients/clients.module';
 import { OrdersModule } from './clients/orders/orders.module';
-import { TrashsModule } from './trashs/trashs.module';
+import { TrashModule } from './trashs/trashModule';
 import { ChannelNamesModule } from './channel-names/channel-names.module';
 
 
@@ -29,7 +29,7 @@ import { ChannelNamesModule } from './channel-names/channel-names.module';
     DepartsModule,
     ClientsModule,
     OrdersModule,
-    TrashsModule,
+    TrashModule,
     ChannelNamesModule,
 ],
   controllers: [],

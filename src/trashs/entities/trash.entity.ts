@@ -10,6 +10,7 @@ import { Order } from '../../clients/orders/entities/order.entity';
 import { Client } from '../../clients/entities/client.entity';
 import { Channel } from '../../clients/entities/channel.entity';
 import { UserPhone } from '../../users/user-phones/entities/user-phone.entity';
+import { UserChannel } from '../../users/user-channels/entities/user-channel.entity';
 
 export type TrashDocument = Trash & Document
 
@@ -49,8 +50,8 @@ export class Trash {
   channel: string;
 
   @ApiProperty({example:'Channel ID', description:'ID канала'})
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Channel' })
-  idUserChannel: ObjectId;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'UserChannel' })
+  idUserChannel: UserChannel;
 
   @ApiProperty({example:'Nick', description:'ниик'})
   @Prop({ type: String })
@@ -91,6 +92,10 @@ export class Trash {
   @ApiProperty({example:'заметки', description:'комментарий'})
   @Prop({ require: true, type: String })
   desc: string;
+
+  @ApiProperty({example:'Количество удалённых записей корзины', description:''})
+  @Prop({ type: Number })
+  countTrash: number;
 }
 
 export const TrashSchema = SchemaFactory.createForClass(Trash);

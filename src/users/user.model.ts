@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory  } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document, ObjectId } from 'mongoose';
 import * as mongoose from 'mongoose';
+
 import { Depart } from './departs/depart.model';
 import { UserPhone } from './user-phones/entities/user-phone.entity';
 import { UserChannel } from './user-channels/entities/user-channel.entity';
@@ -27,7 +28,7 @@ export class User {
   channels: ObjectId[];
 
   @ApiProperty({ example: '61688b4999c6f111736775f6', description: 'ID подразделения' })
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Depart', default: '61688b4999c6f111736775f6' })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Depart', default: '617d55819adb022f544fb735' })
   depart:  ObjectId;
 
   @ApiProperty({ example: '********', description: 'пароль не менее 8 символов, обязателен для админов и отдела продаж' })

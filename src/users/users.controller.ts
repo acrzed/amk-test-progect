@@ -9,8 +9,6 @@ import {
   Get,
   Patch,
   Post,
-  HttpException,
-  HttpStatus,
   ValidationPipe,
   Delete,
 } from '@nestjs/common';
@@ -32,13 +30,25 @@ export class UsersController {
 
   constructor(private userService: UsersService) {
   }
+
+  @ApiOperation({ summary: 'Создание пользователя' ,description:'Точка доступа для создания пользователя, доступ неограничен' })
+  @ApiResponse({ status: 200, type: User })
+  @UsePipes(ValidationPipe)
+  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
+  @Post()
+  async createUser(@Body() dto: UserCreateDto): Promise<User> {
+    return await this.userService.createUser(dto);
+  }
+
   @ApiOperation({ description:'Точка доступа для получения списка всех пользователей, доступ ограничен, только для пользователей с ролью - ADMIN', summary: 'Получить список всех пользователей' })
   @ApiResponse({ status: 200, type: [User] })
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Get()
-  getAll() {
+  getAll(): Promise<User[]> {
     return this.userService.getAllUsers();
   }
 
@@ -48,7 +58,7 @@ export class UsersController {
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Get('name/:name')
-  getByName(@Param('name') name: string) {
+  getByName(@Param('name') name: string): Promise<User> {
     return this.userService.getUserByName(name);
   }
 
@@ -57,21 +67,12 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
-  @Get(':id')
-  getByID(@Param('id') id: ObjectId) {
+  @Get('id/:id')
+  getByID(@Param('id') id: ObjectId): Promise<User> {
       return this.userService.getUserByID(id);
   }
 
-  @ApiOperation({ summary: 'Создание пользователя' ,description:'Точка доступа для создания пользователя, доступ неограничен' })
-  @ApiResponse({ status: 200, type: User })
-  @UsePipes(ValidationPipe)
-  @UseGuards(JwtAuthGuard)
-  @Roles('ADMIN')
-  @UseGuards(RolesGuard)
-  @Post()
-  async createUser(@Body() dto: UserCreateDto) {
-    return await this.userService.createUser(dto);
-  }
+
 
   @ApiOperation({ summary: 'Удаление пользователя' ,description:'Точка доступа для удаления пользователя, доступ для админов' })
   @ApiResponse({ status: 200, type: User })
@@ -79,33 +80,30 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
-  @Delete()
-  removeUser(@Body() dto: RemoveUserDto) {
-    return this.userService.removeUser( dto );
+  @Delete(':id')
+  removeUser(@Param('id') id: ObjectId, @Body() dto: RemoveUserDto): Promise<User> {
+    return this.userService.removeUser( id, dto );
   }
 
 
   @ApiOperation({ summary: 'Добавить пользователю роль' })
-  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: 200, type: User })
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Post('/role')
-  addRole(@Body() dto: RoleAddDto) {
+  addRole(@Body() dto: RoleAddDto): Promise<User> {
     return this.userService.addRole(dto);
   }
 
   @ApiOperation({ summary: 'Изменить подразделение пользователя' })
-  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: 200, type: User })
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Patch('/dept')
-  updateDept(@Body() dto: DepartUpdateDto) {
-    if(dto.userID.length === 24) {
-      return this.userService.updDept(dto);
-    }
-    throw new HttpException({ message: 'Неверный ID' }, HttpStatus.NOT_FOUND);
+  updateDept(@Body() dto: DepartUpdateDto): Promise<User> {
+    return this.userService.updDept(dto);
   }
 
 

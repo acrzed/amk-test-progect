@@ -25,10 +25,7 @@ export class DepartsService {
     const { name } = createDepartDto
     let candidate
     try { candidate = await this.departmentDB.findOne({name: name}) } catch (e) { console.log(e) }
-    if (candidate) {
-      throw new HttpException({
-        message: `Ошибка - отдел - ${candidate} уже существует!` }, HttpStatus.CONFLICT);
-    }
+    if (candidate) { throw new HttpException({ message: `Ошибка - отдел - ${candidate} уже существует!` }, HttpStatus.CONFLICT);}
     try {
       const dept = new this.departmentDB(createDepartDto);
       console.log('создан отдел - ',dept)
@@ -92,9 +89,7 @@ export class DepartsService {
 
   async remove(id: ObjectId, dto: RemoveDepartDto) {
     const { idCreator, name, desc } = dto;
-    if( !mongoose.isValidObjectId(idCreator) ) {
-      throw new HttpException({ message: `Ошибка - ID удаляющего пользователя #${idCreator} не корректен!` }, HttpStatus.BAD_REQUEST);
-    }
+    if( !mongoose.isValidObjectId(idCreator) ) { throw new HttpException({ message: `Ошибка - ID удаляющего пользователя #${idCreator} не корректен!` }, HttpStatus.BAD_REQUEST);}
     let user
     try { user = await this.userDB.findById( idCreator ) } catch (e) { console.log(e) }
     if ( !user ){ throw new HttpException({ message: `Удаляющий пользователь с ID #${idCreator} не найден` }, HttpStatus.NOT_FOUND)}

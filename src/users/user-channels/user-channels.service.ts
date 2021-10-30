@@ -89,32 +89,25 @@ export class UserChannelsService {
 
   async findChannelByNick( nick: string ): Promise<UserChannel> {
     let channel
-    try {
-    channel = this.userChannelDB.find({ nick: nick }); } catch (e) { console.log(e) }
-    if (!channel){
-      throw new HttpException({
-        message: `Ошибка - канал с ником - ${nick} не найден!` }, HttpStatus.CONFLICT); }
+    try { channel = await this.userChannelDB.find({ nick: nick }); } catch (e) { console.log(e) }
+    if (!channel){ throw new HttpException({ message: `Ошибка - канал с ником - ${nick} не найден!` }, HttpStatus.NOT_FOUND); }
     return channel
   }
 
   async findOneChannelByID( id: ObjectId): Promise<UserChannel> {
-    if ( !mongoose.isValidObjectId( id ) ) {
-      throw new HttpException({ message: `Неверный формат ID - ${id}, \nтребуется ID канала, длинной 24 символа` }, HttpStatus.BAD_REQUEST);    }
-    let updChannel
-    try { updChannel = this.userChannelDB.findById(id); } catch (e) { console.log(e) }
-    if (!updChannel){
-      throw new HttpException({
-        message: `Ошибка - канал с ID #${id} не найден!` }, HttpStatus.NOT_FOUND); }
-    return updChannel
+    if ( !mongoose.isValidObjectId( id ) ) { throw new HttpException({ message: `Неверный формат ID - ${id}, \nтребуется ID канала, длинной 24 символа` }, HttpStatus.BAD_REQUEST) }
+    let channel
+    try { channel = await this.userChannelDB.findById(id); } catch (e) { console.log(e) }
+    if (!channel){ throw new HttpException({ message: `Ошибка - канал с ID #${id} не найден!` }, HttpStatus.NOT_FOUND) }
+    return channel
   }
 
   async updateChannel(id: ObjectId, dto: UpdateUserChannelDto) {
     const { channel, nick, desc } = dto;
-    if ( !mongoose.isValidObjectId(id) ) {
-      throw new HttpException({ message: `Неверный формат ID - ${id}, \nтребуется ID канала, длинной 24 символа` }, HttpStatus.NOT_FOUND);    }
+    if ( !mongoose.isValidObjectId(id) ) { throw new HttpException({ message: `Неверный формат ID - ${id}, \nтребуется ID канала, длинной 24 символа` }, HttpStatus.NOT_FOUND);    }
     let updChannel
     try { updChannel = await this.userChannelDB.findById(id) } catch (e) { console.log(e) }
-    if (!updChannel){ throw new HttpException({ message: `Ошибка - канал с ID #${id} не найден!` }, HttpStatus.CONFLICT); }
+    if (!updChannel){ throw new HttpException({ message: `Ошибка - канал с ID #${id} не найден!` }, HttpStatus.NOT_FOUND); }
     let upChannel = updChannel.channel, upNick = updChannel.nick, upDesc = updChannel.desc, newChannelName;
     if (channel){
       let channelName

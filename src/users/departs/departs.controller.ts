@@ -22,7 +22,7 @@ export class DepartsController {
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Post()
-  create(@Body() createDepartDto: CreateDepartDto) {
+  create(@Body() createDepartDto: CreateDepartDto): Promise<Depart> {
     return this.departsService.create(createDepartDto);
   }
 
