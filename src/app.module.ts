@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './cores/users/users.module';
 import { ConfigModule } from '@nestjs/config';
-import { RolesModule } from './roles/roles.module';
+import { RolesModule } from './comCores/roles/roles.module';
 import { AuthModule } from './auth/auth.module';
-import { DepartsModule } from './users/departs/departs.module';
-import { ClientsModule } from './clients/clients.module';
-import { OrdersModule } from './clients/orders/orders.module';
-import { TrashModule } from './trashs/trashModule';
-import { ChannelNamesModule } from './channel-names/channel-names.module';
+import { DepartsModule } from './cores/users/departs/departs.module';
+import { ClientsModule } from './cores/clients/clients.module';
+import { OrdersModule } from './cores/orders/orders.module';
+import { TrashModule } from './comCores/trashs/trashModule';
+import { ChannelNamesModule } from './comCores/channel-names/channel-names.module';
 
 
 
@@ -36,14 +36,3 @@ import { ChannelNamesModule } from './channel-names/channel-names.module';
   providers: [],
 })
 export class AppModule {}
-
-/*
-const { MongoClient } = require('mongodb');
-const uri = "mongodb+srv://acridzed:EMk$3@is_BG9@cluster0.crtsi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
-*/
