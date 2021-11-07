@@ -49,6 +49,16 @@ export class SupsService {
     return creator
   }
 
+  async validateDTO (dto, count) {
+    let allKeys = Object.keys(dto)
+    if (allKeys.includes('desc') && allKeys.length === count){}
+    else {
+      if (!allKeys.includes('desc') && allKeys.length === count-1){}
+      else {
+        throw new HttpException({ message: `Ошибка - одно из полей не заполнено!` }, HttpStatus.CONFLICT);
+      } }
+  }
+
   async validateClient(idClient){
     if ( !mongoose.isValidObjectId(idClient) ){  throw new HttpException({ message: `ID клиента #${idClient} не корректен!` }, HttpStatus.BAD_REQUEST)}
     let client
@@ -95,6 +105,10 @@ export class SupsService {
 
   stringToDate(date: string, time: string){
     let moment = require('moment'); // require
+    if ( !moment(date, "DD-MM-YYYY" ).isValid() ){
+      throw new HttpException({ message: `данные даты - ${date} не корректны!` }, HttpStatus.CONFLICT)}
+    if (!moment(time, "hh:mm").isValid()) {
+      throw new HttpException({ message: `данные времени - ${time} не корректны!` }, HttpStatus.CONFLICT)}
     let d = date + ' ' + time
     return moment.utc(moment(d, "DD-MM-YYYY hh:mm"));
   }

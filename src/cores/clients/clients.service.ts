@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import * as mongoose from 'mongoose';
 
 import { User, UserDocument } from '../users/user.model';
 import { Client, ClientDocument } from './entities/client.entity';
@@ -54,13 +53,14 @@ export class ClientsService {
 
   //'This action adds a new client';
   async create(dto: CreateClientDto) {
-    let allKeys = Object.keys(dto)
-    if (allKeys.includes('desc') && allKeys.length === 6){}
-    else {
-      if (!allKeys.includes('desc') && allKeys.length === 5){}
-      else {
-      throw new HttpException({ message: `Ошибка - одно из полей не заполнено!` }, HttpStatus.CONFLICT);
-    } }
+    await this.supsService.validateDTO(dto, 6)
+    // let allKeys = Object.keys(dto)
+    // if (allKeys.includes('desc') && allKeys.length === 6){}
+    // else {
+    //   if (!allKeys.includes('desc') && allKeys.length === 5){}
+    //   else {
+    //   throw new HttpException({ message: `Ошибка - одно из полей не заполнено!` }, HttpStatus.CONFLICT);
+    // } }
     const { idCreator, name, phone, channel, nick, desc } = dto
     // проверка по телефону
     let candidate, phoneCan

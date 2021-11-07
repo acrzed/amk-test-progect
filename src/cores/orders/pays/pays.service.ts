@@ -27,21 +27,17 @@ export class PaysService {
   }
 
   async create(dto: CreatePayDto): Promise<Pay> {
+    // проверка DTO
+    await this.supsService.validateDTO(dto, 7)
     const { idCreator, idClient, idOrder, payDate, payTime, paySum, createDate } = dto
     // проверка исходны данных
-    // const creator = await this.supsService.validateCreator(idCreator)
-    // const client = await this.supsService.validateClient(idClient)
-    // const order = await this.supsService.validateOrder(idOrder)
     await this.supsService.validateCreator(idCreator)
     await this.supsService.validateClient(idClient)
     await this.supsService.validateOrder(idOrder)
-    const date = await this.supsService.dateToString(createDate)
     const pDate = await this.supsService.stringToDate(payDate, payTime)
     // проверка оплаты
     const payHash = await this.supsService.validatePayHash(idOrder, payDate, payTime, paySum)
-    console.log(date, payDate, payTime, pDate)
-    const pay = await this.payDB.create({...dto, payHash: payHash, payDateTime: pDate})
-    return pay
+    return await this.payDB.create({...dto, payHash: payHash, payDateTime: pDate})
   }
 
   async findAll() {
