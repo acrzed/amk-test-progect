@@ -11,19 +11,21 @@ import { Trash, TrashDocument } from '../../../comCores/trashs/entities/trash.en
 import { CreatePayDto } from './dto/create-pay.dto';
 import { UpdatePayDto } from './dto/update-pay.dto';
 import { RemoveTrashDto } from '../../../comCores/trashs/dto/remove-trash.dto';
+
+
 import { UsersService } from '../../users/users.service';
-import { ClientsService } from '../../clients/clients.service';
+import { OrdersService } from '../orders.service';
+import { SupsService } from '../../sups/sups.service';
 
 
 @Injectable()
 export class PaysService {
   constructor(
-    @InjectModel(Client.name) private clientDB: Model<ClientDocument>,
-    @InjectModel(User.name) private userDB: Model<UserDocument>,
-    @InjectModel(Trash.name) private trashDB: Model<TrashDocument>,
-    @InjectModel(Pay.name) private payDB: Model<TrashDocument>,
-    private userService: UsersService,
-    private clientService: ClientsService,
+    @InjectModel(Client.name)   private clientDB: Model<ClientDocument>,
+    @InjectModel(User.name)     private userDB: Model<UserDocument>,
+    @InjectModel(Trash.name)    private trashDB: Model<TrashDocument>,
+    @InjectModel(Pay.name)      private payDB: Model<TrashDocument>,
+                                private supsService: SupsService
   ) {
   }
 
@@ -45,17 +47,11 @@ export class PaysService {
 
   async remove(id: Pay, dto: RemoveTrashDto): Promise<Pay> {
     const { idCreator, desc } = dto
-    let creator = await this.userService.validateCreator(idCreator)
-    let pay = await this.validatePay(id)
-    let client = await this.clientService.validateClient(pay.idClient)
+    let creator = await this.supsService.validateCreator(idCreator)
+    let pay = await this.supsService.validatePay(id)
+    let client = await this.supsService.validateClient(pay.idClient)
     // нет корзины - trash
     return pay;
   }
-  async validatePay(id: Pay) {
-    if ( !mongoose.isValidObjectId(id) ){  throw new HttpException({ message: `ID удаляемой оплаты #${id} не корректен!` }, HttpStatus.BAD_REQUEST)}
-    let pay
-    try { pay = await this.payDB.findById(id) } catch (e) { console.log(e) }
-    if ( !pay ){ throw new HttpException({ message: `Удаляемая оплата с ID #${id} не найдена` }, HttpStatus.NOT_FOUND)}
-    return pay
-  }
+
 }

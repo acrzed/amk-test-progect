@@ -16,12 +16,15 @@ import { DepartsModule } from './departs/departs.module';
 import { UserPhonesModule } from './user-phones/user-phones.module';
 import { UserChannelsModule } from './user-channels/user-channels.module';
 import { ChannelNamesModule } from '../../comCores/channel-names/channel-names.module';
+import { Client, ClientSchema } from '../clients/entities/client.entity';
+import { SupsModule } from '../sups/sups.module';
 
 
 @Module({
   imports:[
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
+      { name: Client.name, schema: ClientSchema },
       { name: Role.name, schema: RoleSchema },
       { name: Depart.name, schema: DepartSchema },
       { name: UserPhone.name, schema: UserPhoneSchema },
@@ -30,11 +33,14 @@ import { ChannelNamesModule } from '../../comCores/channel-names/channel-names.m
       { name: Trash.name, schema: TrashSchema }
     ]),
     forwardRef(() => AuthModule),
+    forwardRef(() => SupsModule),
+    SupsModule,
     RolesModule,
     DepartsModule,
     UserPhonesModule,
     UserChannelsModule,
-    ChannelNamesModule ],
+    ChannelNamesModule,
+  ],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService]

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './cores/users/users.module';
 import { ConfigModule } from '@nestjs/config';
@@ -9,6 +9,7 @@ import { ClientsModule } from './cores/clients/clients.module';
 import { OrdersModule } from './cores/orders/orders.module';
 import { TrashModule } from './comCores/trashs/trashModule';
 import { ChannelNamesModule } from './comCores/channel-names/channel-names.module';
+import { SupsModule } from './cores/sups/sups.module';
 
 
 
@@ -23,6 +24,9 @@ import { ChannelNamesModule } from './comCores/channel-names/channel-names.modul
       useUnifiedTopology: true,
       useCreateIndex: true,
     }),
+    forwardRef(() => AuthModule),
+    // forwardRef(() => SupsModule),
+    SupsModule,
     UsersModule,
     RolesModule,
     AuthModule,
@@ -30,7 +34,7 @@ import { ChannelNamesModule } from './comCores/channel-names/channel-names.modul
     ClientsModule,
     OrdersModule,
     TrashModule,
-    ChannelNamesModule,
+    ChannelNamesModule
 ],
   controllers: [],
   providers: [],

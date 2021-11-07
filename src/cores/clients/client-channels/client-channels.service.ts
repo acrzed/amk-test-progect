@@ -26,16 +26,15 @@ export class ClientChannelsService {
     @InjectModel(User.name) private userDB: Model<UserDocument>,
     @InjectModel(ClientChannel.name) private clientChannelDB: Model<ClientChannelDocument>,
     @InjectModel(Trash.name) private trashDB: Model<TrashDocument>,
-        private nameService: ChannelNamesService,
-        private userService: UsersService,
-        private clientService: ClientsService,
+        private nameService: ChannelNamesService
   ) {
   }
 
 
   async addClientChannel(dto: AddClientChannelDto): Promise<ClientChannel> {
     const { idClient, channel, nick, desc } = dto
-    let client = await this.clientService.validateClient(idClient)
+    // let client = await this.clientService.validateClient(idClient)
+    let client = await this.clientDB.findById(idClient)
     // Проверка полей канал и ник
     // поле канал не заполнено
     if (!channel){ throw new HttpException({ message: `Ошибка - поле названия канала пусто!` }, HttpStatus.BAD_REQUEST) }
@@ -114,9 +113,9 @@ export class ClientChannelsService {
 
   async removeChannel(id: ClientChannel, dto: RemoveTrashDto): Promise<ClientChannel> {
     const { idCreator, desc } = dto
-    let creator = await this.userService.validateCreator(idCreator)
+    let creator = await this.userDB.findById(idCreator)
     let delChannel = await this.validateClientChannel(id)
-    let client = await this.clientService.validateClient(delChannel.idClient)
+    let client = await this.clientDB.findById(delChannel.idClient)
     if (client.channels.indexOf(id) > 0) {client.channels.splice( client.channels.indexOf(id), 1 )}
     try {
       await client.save().then(() => {

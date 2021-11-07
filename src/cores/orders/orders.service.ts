@@ -9,19 +9,18 @@ import { AddOrderDto } from './dto/add-order.dto';
 import { Trash, TrashDocument } from '../../comCores/trashs/entities/trash.entity';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { RemoveTrashDto } from '../../comCores/trashs/dto/remove-trash.dto';
-import { UsersService } from '../users/users.service';
-import { ClientsService } from '../clients/clients.service';
-
+import { User, UserDocument } from '../users/user.model';
+import { SupsService } from '../sups/sups.service';
 
 
 @Injectable()
 export class OrdersService {
   constructor(
+    @InjectModel(User.name) private userDB: Model<UserDocument>,
     @InjectModel(Client.name) private clientDB: Model<ClientDocument>,
     @InjectModel(Trash.name) private trashDB: Model<TrashDocument>,
     @InjectModel(Order.name) private orderDB: Model<OrderDocument>,
-    private userService: UsersService,
-    private clientService: ClientsService,
+    private supsService: SupsService,
   ) {
   }
 
@@ -45,45 +44,38 @@ export class OrdersService {
   }
 
   async removeOrder(id: Order, dto: RemoveTrashDto): Promise<Client> {
-    const { idCreator, desc } = dto
-    await this.userService.validateCreator(idCreator)
-    let order = await this.validateOrder(id);
-    // let order = await this.orderDB.findById(id);
-    let client = await this.clientService.validateClient(order.idClient)
-    await this.userService.validateDesc(desc)
+    const { idCreator, desc } = dto;
+    await this.supsService.validateCreator(idCreator);
+    await this.supsService.validateDesc(desc);
+    let order = await this.supsService.validateOrder(id);
+    let client = await this.clientDB.findById(order.idClient);
     let basket = order.basket;
     let delOrderClientIndex = client.orders.indexOf(id);
     if (delOrderClientIndex < 0) {
       throw new HttpException({ message: `Ошибка - у клиента ${client.name} заказ с ID #${id} не найден!` }, HttpStatus.NOT_FOUND);
     }
     client.orders.splice(delOrderClientIndex, 1);
-
     await this.orderDB.findByIdAndDelete(id);
     client.save()
       .then(() => {
-        const trash = new this.trashDB({ ...dto, idClient: client._id, basket: basket });
+        const trash = new this.trashDB({ ...dto, idClient: client._id, order: order, basket: basket });
         trash.save();
       });
     return client;
   }
 
-  findAllOrders() {
-    return `This action returns all orders`;
+  async findAllOrders(): Promise<Order[]> {
+    return await this.orderDB.find().exec();
   }
 
-  findOrderByID(id: number) {
-    return `This action returns a #${id} order`;
+  async findOrderByID(id: Order): Promise<Order> {
+    return await this.supsService.validateOrder(id)
+
   }
 
   updateOrder(id: number, updateOrderDto: UpdateOrderDto) {
     return `This action updates a #${id} order`;
   }
 
-  async validateOrder(idOrder: Order){
-    if ( !mongoose.isValidObjectId(idOrder) ){  throw new HttpException({ message: `ID удаляемого заказа #${idOrder} не корректен!` }, HttpStatus.BAD_REQUEST)}
-    let order
-    try { order = await this.orderDB.findById(idOrder) } catch (e) { console.log(e) }
-    if ( !order ){ throw new HttpException({ message: `Удаляемый заказ с ID #${idOrder} не найден` }, HttpStatus.NOT_FOUND)}
-    return order
-  }
+
 }

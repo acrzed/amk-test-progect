@@ -22,12 +22,15 @@ import { ChannelName, ChannelNameDocument } from '../../comCores/channel-names/e
 import { Trash, TrashDocument } from '../../comCores/trashs/entities/trash.entity';
 import { UserChannelsService } from './user-channels/user-channels.service';
 import { RemoveTrashDto } from '../../comCores/trashs/dto/remove-trash.dto';
+import { Client, ClientDocument } from '../clients/entities/client.entity';
+import { SupsService } from '../sups/sups.service';
 
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userDB: Model<UserDocument>,
+    @InjectModel(Client.name) private clientDB: Model<ClientDocument>,
     @InjectModel(Depart.name) private departDB: Model<DepartDocument>,
     @InjectModel(UserPhone.name) private userPhonesDB: Model<UserPhoneDocument>,
     @InjectModel(UserChannel.name) private channelsDB: Model<UserChannelDocument>,
@@ -36,9 +39,10 @@ export class UsersService {
               private roleService: RolesService,
               private phoneService: UserPhonesService,
               private channelService: UserChannelsService,
-              private departService: DepartsService
-  ) {
-  }
+              private departService: DepartsService,
+              private supsService: SupsService
+
+  ) {}
 
   async createUser(dto: UserCreateDto): Promise<User> {
     const { name, phone, channel, nick } = dto
@@ -95,35 +99,29 @@ export class UsersService {
     // проверка ID и наличие пользователей
     if (id === idCreator) { throw new HttpException({ message: `Ошибка - невозможно удалить самого себя!` }, HttpStatus.CONFLICT);}
     // удаляемый
-    if ( !mongoose.isValidObjectId(id) ){ throw new HttpException({ message: `ID удаляемого пользователя #${id} не корректен!` }, HttpStatus.BAD_REQUEST)}
-    let delUser
-    try { delUser = await this.userDB.findById( id ) } catch (e) { console.log(e) }
-    if ( !delUser ){ throw new HttpException({ message: `Удаляемый пользователь с ID #${id} не найден` }, HttpStatus.NOT_FOUND)}
+    let user = await this.supsService.validateCreator(id)
     // удаляющий
-    if ( !mongoose.isValidObjectId(idCreator) ){ throw new HttpException({ message: `ID удаляющего пользователя #${id} не корректен!` }, HttpStatus.BAD_REQUEST)}
-    let creator
-    try { creator = await this.userDB.findById( idCreator ) } catch (e) { console.log(e) }
-    if ( !creator ){ throw new HttpException({ message: `Удаляющий пользователь с ID #${idCreator} не найден` }, HttpStatus.NOT_FOUND)}
+    let creator = await this.supsService.validateCreator(idCreator)
     // причина удаления
-    if (!desc) { throw new HttpException({ message: `Необходимо указать причину удаления` }, HttpStatus.NOT_FOUND)}
+    await this.supsService.validateDesc(desc)
     // телефоны
-    try { for (let i = 0; i < delUser.phones.length; i++){
-      let delPhone = await this.userPhonesDB.findByIdAndDelete(delUser.phones[i])
+    try { for (let i = 0; i < user.phones.length; i++){
+      let delPhone = await this.userPhonesDB.findByIdAndDelete(user.phones[i])
       if(delPhone){
         const trash = new this.trashDB({
           idCreator: idCreator, idUserPhone: delPhone._id,
-          phone: delPhone.phone, desc: `Удаление пользователя ${delUser.name}`,
+          phone: delPhone.phone, desc: `Удаление пользователя ${user.name}`,
         });
         await trash.save();
       }
     } } catch (e) { console.log(e) }
     // каналы
-    try { for (let i = 0; i < delUser.channels.length; i++){
-      let delChannel = await this.channelsDB.findByIdAndDelete(delUser.channels[i])
+    try { for (let i = 0; i < user.channels.length; i++){
+      let delChannel = await this.channelsDB.findByIdAndDelete(user.channels[i])
       if(delChannel){
         const trash = new this.trashDB({
           idCreator: idCreator, idUserChannel: delChannel._id, idUser: delChannel.idUser,
-          channel: delChannel.channel, nick: delChannel.nick, desc: `Удаление пользователя ${delUser.name}`,
+          channel: delChannel.channel, nick: delChannel.nick, desc: `Удаление пользователя ${user.name}`,
         });
         await trash.save();
       }
@@ -132,8 +130,8 @@ export class UsersService {
     try {
       const trashUser = await new this.trashDB({
         idCreator: idCreator, idUser: id,
-        removeDate: Date.now(), roles: delUser.roles,
-        idDepart: delUser.depart, desc: desc })
+        removeDate: Date.now(), roles: user.roles,
+        idDepart: user.depart, desc: desc })
       await trashUser.save()
       return await this.userDB.findByIdAndDelete(id)
     }catch (e) {
@@ -181,20 +179,7 @@ export class UsersService {
     throw new HttpException({ message: `Отдел ${ dto.dept } не найден!` }, HttpStatus.NOT_FOUND)
 }
 
-  async validateCreator(idCreator: User){
-    if ( !mongoose.isValidObjectId(idCreator) ) { throw new HttpException({ message: `ID удаляющего пользователя #${idCreator} не корректен!` }, HttpStatus.BAD_REQUEST)}
-    let creator
-    try { creator = await this.userDB.findById( idCreator ) } catch (e) { console.log(e) }
-    if ( !creator ){ throw new HttpException({ message: `Удаляющий пользователь с ID #${idCreator} не найден` }, HttpStatus.NOT_FOUND)}
-    return idCreator
-  }
 
-  async validateDesc(desc){
-    if (!desc) {
-      throw new HttpException({ message: `Необходимо указать причину удаления` }, HttpStatus.NOT_FOUND);
-    }
-    return desc
-  }
 
 
 

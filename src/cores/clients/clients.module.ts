@@ -22,6 +22,7 @@ import { ClientChannelsModule } from './client-channels/client-channels.module';
 import { UsersModule } from '../users/users.module';
 import { PaysService } from '../orders/pays/pays.service';
 import { UsersService } from '../users/users.service';
+import { SupsModule } from '../sups/sups.module';
 
 
 @Module({
@@ -38,16 +39,19 @@ import { UsersService } from '../users/users.service';
       { name: Trash.name, schema: TrashSchema }
       ]),
     forwardRef(() => AuthModule),
-    UsersModule,
+    // UsersModule,
+    forwardRef(() => UsersModule),
     ClientPhonesModule,
     ClientChannelsModule,
     OrdersModule,
     PaysModule,
     DispatchsModule,
-    RecipientsModule
+    RecipientsModule,
+    // SupsModule,
+    forwardRef(() => SupsModule),
   ],
   controllers: [ClientsController],
-  providers: [ClientsService, PaysService, UsersService],
+  providers: [ClientsService, PaysService],
   exports: [ClientsService]
 })
 export class ClientsModule {}

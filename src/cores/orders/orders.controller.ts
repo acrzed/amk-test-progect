@@ -45,13 +45,13 @@ export class OrdersController {
   // }
 
   @Get()
-  findAllOrders() {
+  findAllOrders(): Promise<Order[]> {
     return this.ordersService.findAllOrders();
   }
 
   @Get(':id')
-  findOrderByID(@Param('id') id: string) {
-    return this.ordersService.findOrderByID(+id);
+  findOrderByID(@Param('id') id: Order): Promise<Order> {
+    return this.ordersService.findOrderByID(id);
   }
 
   @Patch(':id')

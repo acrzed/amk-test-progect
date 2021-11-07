@@ -44,7 +44,7 @@ export class ClientChannelsController {
 
   @ApiOperation({ summary: 'Канал клиента по ID' ,description:'Точка доступа для получения канала клиента по ID, доступ только для админов' })
   @ApiResponse({ status: 200, type: ClientChannel })
-  @Get('id/:id')
+  @Get(':id')
   findChannelByID(@Param('id') id: ClientChannel) : Promise<ClientChannel>{
     return this.clientChannelsService.findOneChannelByID(id);
   }

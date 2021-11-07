@@ -17,6 +17,7 @@ import { OrdersController } from './orders.controller';
 import { Trash, TrashSchema } from '../../comCores/trashs/entities/trash.entity';
 import { OrderTypesModule } from './order-types/order-types.module';
 import { OrderStatsModule } from './order-stats/order-stats.module';
+import { SupsModule } from '../sups/sups.module';
 
 
 @Module({
@@ -27,15 +28,16 @@ import { OrderStatsModule } from './order-stats/order-stats.module';
       { name: Client.name, schema: ClientSchema },
       { name: Trash.name, schema: TrashSchema },
     ]),
-    UsersModule,
+    // UsersModule,
     OrderTypesModule,
     OrderStatsModule,
+    forwardRef(() =>  UsersModule),
     forwardRef(() => AuthModule),
-    forwardRef(() => ClientsModule),
+    forwardRef(() => SupsModule),
 
   ],
   controllers: [OrdersController],
-  providers: [OrdersService, UsersService, ClientsService],
+  providers: [OrdersService],
   exports: [OrdersService]
 })
 export class OrdersModule {}

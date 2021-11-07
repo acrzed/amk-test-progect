@@ -42,14 +42,14 @@ export class ClientPhonesController {
 
   @ApiOperation({ summary: 'Все телефоны пользователей' ,description:'Точка доступа для получения всех номеров телефонов пользователей, доступ только для админов' })
   @ApiResponse({ status: 200, type: [ClientPhone] })
-  @Get('/all')
+  @Get()
   findAllClientPhone(): Promise<ClientPhone[]> {
     return this.clientPhonesService.findAllClientPhone();
   }
 
   @ApiOperation({ summary: 'Телефон клиента по ID' ,description:'Точка доступа для получения телефона клиента по ID, доступ только для админов' })
   @ApiResponse({ status: 200, type: ClientPhone })
-  @Get('id/:id')
+  @Get(':id')
   findClientPhoneById(@Param('id') id: ClientPhone): Promise<ClientPhone> {
     return this.clientPhonesService.findClientPhoneById(id);
   }

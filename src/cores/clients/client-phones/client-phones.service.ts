@@ -11,9 +11,6 @@ import { Trash, TrashDocument } from '../../../comCores/trashs/entities/trash.en
 import { AddClientPhoneDto } from './dto/add-client-phone.dto';
 import { UpdateClientPhoneDto } from './dto/update-client-phone.dto';
 import { RemoveTrashDto } from '../../../comCores/trashs/dto/remove-trash.dto';
-import { UsersService } from '../../users/users.service';
-import { ClientsService } from '../clients.service';
-
 
 
 
@@ -23,9 +20,7 @@ export class ClientPhonesService {
     @InjectModel(User.name) private userDB: Model<UserDocument>,
     @InjectModel(Client.name) private clientDB: Model<ClientDocument>,
     @InjectModel(ClientPhone.name) private clientPhoneDB: Model<ClientPhoneDocument>,
-    @InjectModel(Trash.name) private trashDB: Model<TrashDocument>,
-    private userService: UsersService,
-    private clientService: ClientsService,
+    @InjectModel(Trash.name) private trashDB: Model<TrashDocument>
   ) {
   }
 
@@ -106,9 +101,10 @@ export class ClientPhonesService {
 
   async removeClientPhone(id: ClientPhone, dto: RemoveTrashDto):Promise<ClientPhone> {
     const { idCreator, desc } = dto;
-    let creator = await this.userService.validateCreator(idCreator)
+    let creator = await this.userDB.findById(idCreator)
     let phone = await this.validateClientPhone(id)
-    let client = await this.clientService.validateClient(phone.idClient)
+    let client = await this.clientDB.findById(phone.idClient)
+    // let client = await this.clientService.validateClient(phone.idClient)
     let numPhone;
     numPhone = phone.phone;
     try {

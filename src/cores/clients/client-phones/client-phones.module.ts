@@ -21,7 +21,7 @@ import { ClientsService } from '../clients.service';
     forwardRef(() => AuthModule),
   ],
   controllers: [ClientPhonesController],
-  providers: [ClientPhonesService, UsersService, ClientsService],
+  providers: [ClientPhonesService],
   exports: [ClientPhonesService]
 })
 export class ClientPhonesModule {}

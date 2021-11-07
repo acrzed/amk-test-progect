@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Document, ObjectId } from 'mongoose';
+import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 
 import { User } from '../../../cores/users/user.model';
@@ -87,8 +87,8 @@ export class Trash {
   idClientPhone: ClientPhone;
 
   @ApiProperty({example:'Order ID', description:'ID заказа'})
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Order' })
-  idOrder: Order;
+  @Prop({ type: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' } })
+  order: Order;
 
   @ApiProperty({ example: 'ID оплаты', description: 'все получатели клиента' })
   @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pay'}] })

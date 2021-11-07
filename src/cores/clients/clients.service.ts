@@ -24,6 +24,7 @@ import { PaysService } from '../orders/pays/pays.service';
 import { DispatchsService } from '../orders/dispaches/dispatchs.service';
 import { RecipientsService } from '../orders/dispaches/packages/recipients/recipients.service';
 import { UsersService } from '../users/users.service';
+import { SupsService } from '../sups/sups.service';
 
 
 
@@ -40,15 +41,14 @@ export class ClientsService {
     @InjectModel(Dispatch.name) private dispatchDB: Model<DispatchDocument>,
     @InjectModel(Recipient.name) private recipientDB: Model<RecipientDocument>,
     @InjectModel(Trash.name) private trashDB: Model<TrashDocument>,
+              private userService: UsersService,
               private phoneService: ClientPhonesService,
               private channelService: ClientChannelsService,
               private orderService: OrdersService,
               private payService: PaysService,
               private dispatchService: DispatchsService,
               private recipientService: RecipientsService,
-              private userService: UsersService,
-              private clientService: ClientsService,
-
+              private supsService: SupsService
   ) {
   }
 
@@ -133,11 +133,11 @@ export class ClientsService {
     const { idCreator, desc } = dto
     // проверка ID и наличие пользователей
     // удаляющий
-    let creator = await this.userService.validateCreator(idCreator)
+    let creator = await this.supsService.validateCreator(idCreator)
     // удаляемый
-    let client = await this.clientService.validateClient(id)
+    let client = await this.supsService.validateClient(id)
     // причина удаления
-    await this.userService.validateDesc(desc)
+    await this.supsService.validateDesc(desc)
     // удаление
     // удалить телефоны
     await client.phones.forEach((id: ClientPhone) => {this.phoneService.removeClientPhone(id, dto)})
@@ -154,13 +154,7 @@ export class ClientsService {
     return client
   }
 
-  async validateClient(idClient: Client){
-    if ( !mongoose.isValidObjectId(idClient) ){  throw new HttpException({ message: `ID клиента #${idClient} не корректен!` }, HttpStatus.BAD_REQUEST)}
-    let client
-    try { client = await this.clientDB.findById(idClient) } catch (e) { console.log(e) }
-    if ( !client ) { throw new HttpException({ message: `Пользователь с ID #${idClient} не найден!` }, HttpStatus.NOT_FOUND);}
-    return client
-  }
+
 
   /*
 
