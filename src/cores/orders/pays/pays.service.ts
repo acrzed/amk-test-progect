@@ -1,47 +1,58 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from "mongoose";
-import * as mongoose from 'mongoose';
-
-import { User, UserDocument } from '../../users/user.model';
-import { Client, ClientDocument } from '../../clients/entities/client.entity';
-import { Pay } from './entities/pay.entity';
+// import * as mongoose from 'mongoose';
+//
+// import { User, UserDocument } from '../../users/user.model';
+// import { Client, ClientDocument } from '../../clients/entities/client.entity';
+import { Pay, PayDocument } from './entities/pay.entity';
 import { Trash, TrashDocument } from '../../../comCores/trashs/entities/trash.entity';
 
 import { CreatePayDto } from './dto/create-pay.dto';
 import { UpdatePayDto } from './dto/update-pay.dto';
 import { RemoveTrashDto } from '../../../comCores/trashs/dto/remove-trash.dto';
 
-
-import { UsersService } from '../../users/users.service';
-import { OrdersService } from '../orders.service';
 import { SupsService } from '../../sups/sups.service';
 
 
 @Injectable()
 export class PaysService {
   constructor(
-    @InjectModel(Client.name)   private clientDB: Model<ClientDocument>,
-    @InjectModel(User.name)     private userDB: Model<UserDocument>,
+    // @InjectModel(Client.name)   private clientDB: Model<ClientDocument>,
+    // @InjectModel(User.name)     private userDB: Model<UserDocument>,
     @InjectModel(Trash.name)    private trashDB: Model<TrashDocument>,
-    @InjectModel(Pay.name)      private payDB: Model<TrashDocument>,
+    @InjectModel(Pay.name)      private payDB: Model<PayDocument>,
                                 private supsService: SupsService
   ) {
   }
 
-  create(createPayDto: CreatePayDto) {
-    return 'This action adds a new pay';
+  async create(dto: CreatePayDto): Promise<Pay> {
+    const { idCreator, idClient, idOrder, payDate, payTime, paySum, createDate } = dto
+    // проверка исходны данных
+    // const creator = await this.supsService.validateCreator(idCreator)
+    // const client = await this.supsService.validateClient(idClient)
+    // const order = await this.supsService.validateOrder(idOrder)
+    await this.supsService.validateCreator(idCreator)
+    await this.supsService.validateClient(idClient)
+    await this.supsService.validateOrder(idOrder)
+    const date = await this.supsService.dateToString(createDate)
+    const pDate = await this.supsService.stringToDate(payDate, payTime)
+    // проверка оплаты
+    const payHash = await this.supsService.validatePayHash(idOrder, payDate, payTime, paySum)
+    console.log(date, payDate, payTime, pDate)
+    const pay = await this.payDB.create({...dto, payHash: payHash, payDateTime: pDate})
+    return pay
   }
 
-  findAll() {
-    return `This action returns all pays`;
+  async findAll() {
+    return this.supsService.stringToDate("21.12.2021", "23:45");
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return `This action returns a #${id} pay`;
   }
 
-  update(id: number, updatePayDto: UpdatePayDto) {
+  async update(id: number, updatePayDto: UpdatePayDto) {
     return `This action updates a #${id} pay`;
   }
 

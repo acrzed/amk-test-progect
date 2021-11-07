@@ -22,7 +22,7 @@ export class PaysController {
   @ApiOperation({ summary: 'Добавить новую оплату клиента' ,description:'Точка доступа для добавления новых оплат клиента, доступ только для админов' })
   @ApiResponse({ status: 200, type: Pay})
   @Post()
-  create(@Body() createPayDto: CreatePayDto) {
+  create(@Body() createPayDto: CreatePayDto): Promise<Pay> {
     return this.paysService.create(createPayDto);
   }
 

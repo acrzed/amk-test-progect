@@ -25,7 +25,6 @@ import { SupsModule } from './cores/sups/sups.module';
       useCreateIndex: true,
     }),
     forwardRef(() => AuthModule),
-    // forwardRef(() => SupsModule),
     SupsModule,
     UsersModule,
     RolesModule,

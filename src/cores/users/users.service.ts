@@ -77,17 +77,7 @@ export class UsersService {
   }
 
   async getUserByID(id: User): Promise<User> {
-    if ( !mongoose.isValidObjectId(id) ){ throw new HttpException({ message: `ID пользователя #${id} не корректен!` }, HttpStatus.BAD_REQUEST)}
-    let user
-    try { user = await this.userDB.findById( id ) } catch (e) { console.log(e) }
-    if ( !user ){ throw new HttpException({ message: `Пользователь с ID #${id} не найден` }, HttpStatus.NOT_FOUND)}
-    try {
-      user = await this.userDB.findById( id )
-      .populate('depart')
-      .populate('phones')
-      .populate('channels');
-       } catch (e) { console.log(e) }
-    return user
+    return await this.supsService.validateCreator(id)
   }
 
   async getAllUsers(): Promise<User[]> {
@@ -101,7 +91,7 @@ export class UsersService {
     // удаляемый
     let user = await this.supsService.validateCreator(id)
     // удаляющий
-    let creator = await this.supsService.validateCreator(idCreator)
+    await this.supsService.validateCreator(idCreator)
     // причина удаления
     await this.supsService.validateDesc(desc)
     // телефоны

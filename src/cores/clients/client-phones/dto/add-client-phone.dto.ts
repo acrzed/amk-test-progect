@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Prop } from '@nestjs/mongoose';
 import { Length } from 'class-validator';
 import * as mongoose from 'mongoose';
-import { ObjectId } from 'mongoose';
 import { Client } from '../../entities/client.entity';
 
 export class AddClientPhoneDto {

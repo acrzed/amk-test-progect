@@ -3,11 +3,11 @@ import { Prop } from '@nestjs/mongoose';
 import { User } from '../../users/user.model';
 export class CreateClientDto {
 
-  @ApiProperty({ example: 'UserID', description: 'UserID - ID создателя' })
+  @ApiProperty({ required: true,example: 'UserID', description: 'UserID - ID создателя' })
   @Prop({ required: true})
   readonly idCreator: User;
 
-  @ApiProperty({ example: 'Ivan', description: 'имя клиента' })
+  @ApiProperty({ required: true, example: 'Ivan', description: 'имя клиента' })
   @Prop({ required: true, type: String })
   readonly name: string;
 

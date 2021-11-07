@@ -9,23 +9,13 @@ import { UserPhone, UserPhoneDocument } from '../users/user-phones/entities/user
 import { UserChannel, UserChannelDocument } from '../users/user-channels/entities/user-channel.entity';
 import { ChannelName, ChannelNameDocument } from '../../comCores/channel-names/entities/channel-name.entity';
 import { Trash, TrashDocument } from '../../comCores/trashs/entities/trash.entity';
-import { RolesService } from '../../comCores/roles/roles.service';
-import { UserPhonesService } from '../users/user-phones/user-phones.service';
-import { UserChannelsService } from '../users/user-channels/user-channels.service';
-import { DepartsService } from '../users/departs/departs.service';
+
 import { ClientPhone, ClientPhoneDocument } from '../clients/client-phones/entities/client-phone.entity';
 import { ClientChannel, ClientChannelDocument } from '../clients/client-channels/entities/client-channel.entity';
 import { Order, OrderDocument } from '../orders/entities/order.entity';
 import { Pay, PayDocument } from '../orders/pays/entities/pay.entity';
 import { Dispatch, DispatchDocument } from '../orders/dispaches/entities/dispatch.entity';
 import { Recipient, RecipientDocument } from '../orders/dispaches/packages/recipients/entities/recipient.entity';
-import { UsersService } from '../users/users.service';
-import { ClientPhonesService } from '../clients/client-phones/client-phones.service';
-import { ClientChannelsService } from '../clients/client-channels/client-channels.service';
-import { OrdersService } from '../orders/orders.service';
-import { PaysService } from '../orders/pays/pays.service';
-import { DispatchsService } from '../orders/dispaches/dispatchs.service';
-import { RecipientsService } from '../orders/dispaches/packages/recipients/recipients.service';
 
 @Injectable()
 export class SupsService {
@@ -47,43 +37,66 @@ export class SupsService {
 
   ) {}
 
-  async validateCreator(idCreator: User){
-    if ( !mongoose.isValidObjectId(idCreator) ) { throw new HttpException({ message: `ID удаляющего пользователя #${idCreator} не корректен!` }, HttpStatus.BAD_REQUEST)}
+
+  async validateCreator(idCreator){
+    if ( !mongoose.isValidObjectId(idCreator) ) { throw new HttpException({ message: `ID пользователя #${idCreator} не корректен!` }, HttpStatus.BAD_REQUEST)}
     let creator
-    try { creator = await this.userDB.findById( idCreator ) } catch (e) { console.log(e) }
-    if ( !creator ){ throw new HttpException({ message: `Удаляющий пользователь с ID #${idCreator} не найден` }, HttpStatus.NOT_FOUND)}
-    return idCreator
+    try { creator = await this.userDB.findById( idCreator )
+      .populate('depart')
+      .populate('phones')
+      .populate('channels') } catch (e) { console.log(e) }
+    if ( !creator ){ throw new HttpException({ message: `Пользователь с ID #${idCreator} не найден` }, HttpStatus.NOT_FOUND)}
+    return creator
   }
 
-  async validateClient(idClient: Client){
+  async validateClient(idClient){
     if ( !mongoose.isValidObjectId(idClient) ){  throw new HttpException({ message: `ID клиента #${idClient} не корректен!` }, HttpStatus.BAD_REQUEST)}
     let client
     try { client = await this.clientDB.findById(idClient) } catch (e) { console.log(e) }
-    if ( !client ) { throw new HttpException({ message: `Пользователь с ID #${idClient} не найден!` }, HttpStatus.NOT_FOUND);}
+    if ( !client ) { throw new HttpException({ message: `Клиент с ID #${idClient} не найден!` }, HttpStatus.NOT_FOUND);}
     return client
   }
 
-  async validateOrder(idOrder: Order){
-    if ( !mongoose.isValidObjectId(idOrder) ){  throw new HttpException({ message: `ID удаляемого заказа #${idOrder} не корректен!` }, HttpStatus.BAD_REQUEST)}
+  async validateOrder(idOrder){
+    if ( !mongoose.isValidObjectId(idOrder) ){  throw new HttpException({ message: `ID заказа #${idOrder} не корректен!` }, HttpStatus.BAD_REQUEST)}
     let order
     try { order = await this.orderDB.findById(idOrder) } catch (e) { console.log(e) }
-    if ( !order ){ throw new HttpException({ message: `Удаляемый заказ с ID #${idOrder} не найден` }, HttpStatus.NOT_FOUND)}
+    if ( !order ){ throw new HttpException({ message: `Заказ с ID #${idOrder} не найден` }, HttpStatus.NOT_FOUND)}
     return order
   }
 
-  async validatePay(id: Pay) {
-    if ( !mongoose.isValidObjectId(id) ){  throw new HttpException({ message: `ID удаляемой оплаты #${id} не корректен!` }, HttpStatus.BAD_REQUEST)}
+  async validatePay(idPay) {
+    if ( !mongoose.isValidObjectId(idPay) ){  throw new HttpException({ message: `ID оплаты #${idPay} не корректен!` }, HttpStatus.BAD_REQUEST)}
     let pay
-    try { pay = await this.payDB.findById(id) } catch (e) { console.log(e) }
-    if ( !pay ){ throw new HttpException({ message: `Удаляемая оплата с ID #${id} не найдена` }, HttpStatus.NOT_FOUND)}
+    try { pay = await this.payDB.findById(idPay) } catch (e) { console.log(e) }
+    if ( !pay ){ throw new HttpException({ message: `Оплата с ID #${idPay} не найдена` }, HttpStatus.NOT_FOUND)}
     return pay
   }
 
-  async validateDesc(desc){
+  async validatePayHash(idOrder, payDate, payTime, paySum) {
+    let pay
+    let payHash = String(idOrder) + String(payDate) + String(paySum) + String(payTime)
+    try { pay = await this.payDB.findOne({payHash: payHash}) } catch (e) { console.log(e) }
+    if ( pay ){ throw new HttpException({ message: `Оплата заказа с ID #${idOrder} от ${payDate} ${payTime} на сумму ${paySum} уже зафиксирована!` }, HttpStatus.NOT_FOUND)}
+    return payHash
+  }
+
+  validateDesc(desc){
     if (!desc) {
       throw new HttpException({ message: `Необходимо указать причину удаления` }, HttpStatus.NOT_FOUND);
     }
     return desc
+  }
+
+  dateToString (date){
+    let formatter1 = new Intl.DateTimeFormat("ru");
+    return formatter1.format(date)
+  }
+
+  stringToDate(date: string, time: string){
+    let moment = require('moment'); // require
+    let d = date + ' ' + time
+    return moment.utc(moment(d, "DD-MM-YYYY hh:mm"));
   }
 
 }
