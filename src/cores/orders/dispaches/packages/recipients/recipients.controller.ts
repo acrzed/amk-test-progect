@@ -37,7 +37,7 @@ export class RecipientsController {
   @ApiOperation({ description:'Получатель по ID, доступ только для админов и продажников', summary: 'Создание подразделения' })
   @ApiResponse({ status: 200, type: Recipient })
   @Get(':id')
-  findOne(@Param('id') id: ObjectId) {
+  findOne(@Param('id') id: string) {
     return this.recipientsService.findOne(id);
   }
 

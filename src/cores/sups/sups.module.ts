@@ -52,7 +52,10 @@ import { ClientsModule } from '../clients/clients.module';
       { name: Trash.name, schema: TrashSchema }
     ]),
     forwardRef(() => UsersModule),
-    // UsersModule,
+    forwardRef(() => OrdersModule),
+    forwardRef(() => PaysModule),
+    forwardRef(() => ClientsModule),
+    forwardRef(() => AuthModule),
     RolesModule,
     DepartsModule,
     UserPhonesModule,
@@ -62,10 +65,6 @@ import { ClientsModule } from '../clients/clients.module';
     ClientChannelsModule,
     DispatchsModule,
     RecipientsModule,
-    forwardRef(() => OrdersModule),
-    forwardRef(() => PaysModule),
-    forwardRef(() => ClientsModule),
-    forwardRef(() => AuthModule),
 
   ],
   controllers: [SupsController],

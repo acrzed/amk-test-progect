@@ -18,7 +18,7 @@ export class City {
   @Prop({ required: true, type: String, unique: true })
   city: string;
 
-  @ApiProperty({ example: '', description: 'API NP города' })
+  @ApiProperty({ example: '', description: 'API NP - REF города' })
   @Prop({ type: String, unique: true })
   ref: string;
 

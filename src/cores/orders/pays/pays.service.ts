@@ -43,8 +43,7 @@ export class PaysService {
   }
 
   async findAll(): Promise<Pay[]> {
-    return this.payDB.find().exec()
-  }
+    try { return await this.payDB.find().exec() } catch (e) { console.log(e) } }
 
   async findByID(id: string): Promise<Pay> {
     return await this.supsService.validatePay(id)

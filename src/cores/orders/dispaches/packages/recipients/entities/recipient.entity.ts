@@ -5,7 +5,7 @@ import * as mongoose from 'mongoose';
 
 import { User } from '../../../../../users/user.model';
 import { Client } from '../../../../../clients/entities/client.entity';
-import { Length } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
 
 
 export type RecipientDocument = Recipient & Document;
@@ -16,11 +16,15 @@ export class Recipient {
   @ApiProperty({ example: 'ID', description: 'ID order - автоматически' })
   _id: mongoose.Schema.Types.ObjectId;
 
-  @ApiProperty({ example: 'UserID', description: 'UserID - ID создателя' })
+  @ApiProperty({ required: true, example: 'UserID', description: 'UserID - ID создателя' })
+  @IsNotEmpty({ message: 'ID создателя не может быть пустым!'})
+  @IsString({message:'должно быть строкой'})
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   idCreator: User;
 
-  @ApiProperty({example:'ClientID', description:'ID клиента'})
+  @ApiProperty({ required: true, example:'ClientID', description:'ID клиента'})
+  @IsNotEmpty({ message: 'ID клиента не может быть пустым!'})
+  @IsString({message:'должно быть строкой'})
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Client' })
   idClient: Client
 
@@ -29,20 +33,30 @@ export class Recipient {
   sender: string
 
   @ApiProperty({example:'Данилова', description:'Фамилия получателя'})
+  @Length(2,20, {message:'требуется lastName: Фамилия получателя'})
+  @IsNotEmpty({ message: 'Поле фамилии не может быть пустым!'})
+  @IsString({message:'Фамилия должна быть строкой'})
   @Prop({ required: true, type: String })
   lastName: string
 
   @ApiProperty({example:'Марьяна', description:'Имя получателя'})
+  @Length(2,20, {message:'требуется name: Имя получателя'})
+  @IsNotEmpty({ message: 'Поле имени не может быть пустым!'})
+  @IsString({message:'имя должно быть строкой'})
   @Prop({ required: true, type: String })
   name: string
 
   @ApiProperty({example:'Александровна', description:'Отчество получателя'})
+  @IsNotEmpty({ message: 'Поле отчества не может быть пустым!'})
+  @Length(2,20, {message:'требуется middleName: Отчество получателя'})
+  @IsString({message:'Отчество должно быть строкой'})
   @Prop({ type: String })
   middleName: string
 
-  @ApiProperty({ example: '093********', description: 'телефон получателя' })
-  @Length(10,10, {message:'требуется номер телефона вида 098*******, 10 цифр'})
-  @Prop({ required: true, minlength: 10 })
+  @ApiProperty({ example: '093********', description: 'телефон получателя', type: Number })
+  @IsNotEmpty({ message: 'Поле телефон получателя не может быть пустым!'})
+  @IsNumber({maxDecimalPlaces: 10}, {message: 'требуется номер телефона вида 098*******, 10 цифр'})
+  @Prop({ required: true, minlength: 10, maxlength: 10, type: Number })
   phone: number;
 
   @ApiProperty({ example: '01.01.2021', description: 'Дата создания' })

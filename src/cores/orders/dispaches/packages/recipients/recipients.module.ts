@@ -7,6 +7,7 @@ import { Trash, TrashSchema } from '../../../../../comCores/trashs/entities/tras
 import { Client, ClientSchema } from '../../../../clients/entities/client.entity';
 import { AuthModule } from '../../../../../auth/auth.module';
 import { Recipient, RecipientSchema } from './entities/recipient.entity';
+import { SupsModule } from '../../../../sups/sups.module';
 
 @Module({
   imports: [
@@ -16,7 +17,9 @@ import { Recipient, RecipientSchema } from './entities/recipient.entity';
       { name: Trash.name, schema: TrashSchema },
       { name: Client.name, schema: ClientSchema }
     ]),
-    forwardRef(() => AuthModule)],
+    forwardRef(() => AuthModule),
+    forwardRef(() => SupsModule),
+  ],
   controllers: [RecipientsController],
   providers: [RecipientsService],
   exports: [RecipientsService]

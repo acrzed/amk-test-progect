@@ -10,6 +10,7 @@ import { User, UserDocument } from '../../../../users/user.model';
 import { Trash, TrashDocument } from '../../../../../comCores/trashs/entities/trash.entity';
 import { Client, ClientDocument } from '../../../../clients/entities/client.entity';
 import { RemoveRecipientDto } from './dto/remove-recipient.dto';
+import { SupsService } from '../../../../sups/sups.service';
 
 @Injectable()
 export class RecipientsService {
@@ -18,6 +19,7 @@ export class RecipientsService {
     @InjectModel(Trash.name) private trashDB: Model<TrashDocument>,
     @InjectModel(Client.name) private clientDB: Model<ClientDocument>,
     @InjectModel(Recipient.name) private recipientDB: Model<RecipientDocument>,
+    private supsService: SupsService
   ) {
   }
 
@@ -26,56 +28,34 @@ export class RecipientsService {
       throw new HttpException({ message: `Ошибка - ID #${obj} не корректен!` }, HttpStatus.BAD_REQUEST);
     }
     return true }
-    notEmpty(str) {
-    let obj = str.toString()
-      if (obj.length < 2){
-        throw new HttpException({ message: `Ошибка - поле ${obj} заполненно не корректно!` }, HttpStatus.BAD_REQUEST);
-      }
-      return true
-    }
 
   async create(dto: CreateRecipientDto): Promise<Recipient> {
-    const { idClient, idCreator, lastName, name, middleName, phone, sender, enterDate, desc } = dto
+    const { idClient, idCreator, lastName, name, middleName, phone } = dto
     // проверка наличия полей
     if ( !idCreator || !idClient || !lastName || !name || !middleName || !phone ){ throw new HttpException({ message: `Ошибка - одно или несколько полей не заполненно! Должны быть заполнены поля - idCreator, idClient, sender, lastName, name, middleName, phone` }, HttpStatus.BAD_REQUEST)}
     // проверка длины телефона
     if (phone.toString().length != 10){throw new HttpException({ message: `Поле ${phone} заполнено не верно, требуется номер телефона вида 098*******, 10 цифр` }, HttpStatus.BAD_REQUEST)}
     // проверка создающего пользователя
-    if (this.validObjectID(idCreator)){}
-    let creator
-    try { creator = await this.userDB.findById( idCreator ) } catch (e) { console.log(e) }
-    if ( !creator ){ throw new HttpException({ message: `Пользователь с ID #${idCreator} не найден` }, HttpStatus.NOT_FOUND)}
+    await this.supsService.validateCreator(idCreator)
     // проверка клиента
-    if (this.validObjectID(idClient)){}
-    let client
-    try { client = await this.clientDB.findById( idClient ) } catch (e) { console.log(e) }
-    if ( !client ){ throw new HttpException({ message: `Пользователь с ID #${idClient} не найден` }, HttpStatus.NOT_FOUND)}
+    await this.supsService.validateClient(idClient)
     // проверка кандидата
-    let candidate
-    try { candidate = await this.recipientDB.findOne({phone: phone}) } catch (e) { console.log(e) }
-    if ( candidate ){
-      if (candidate.lastName == lastName && candidate.name == name && candidate.middleName == middleName && candidate.phone == phone) { throw new HttpException({ message: `Ошибка - получатель - ${candidate.lastName} ${candidate.name} ${candidate.middleName} с телефоном №${candidate.phone} - уже существует!` }, HttpStatus.CONFLICT) }}
-    // создание получателя
-    try {
-      candidate = await this.recipientDB.create(dto)
-      await candidate.save() } catch (e) { console.log(e) }
-    return candidate;
-  }
-
-  async findAll(): Promise<Recipient[]>  {
-    try {
-      return await this.recipientDB.find().exec()
-    }catch (e) {
-      console.log(e)
+    if(await this.supsService.validateRecipientByPhone(phone, lastName, name, middleName)) {
+      // создание получателя
+      try {
+      let recipient = await this.recipientDB.create(dto);
+        return await recipient.save();
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 
-  async findOne(id: ObjectId): Promise<Recipient> {
-    if (this.validObjectID(id)){}
-    let recipient
-    try { recipient = await this.recipientDB.findById( id ) } catch (e) { console.log(e) }
-    if ( !recipient ){ throw new HttpException({ message: `Получатель с ID #${id} не найден` }, HttpStatus.NOT_FOUND)}
-    return recipient
+  async findAll(): Promise<Recipient[]>  {
+    try { return await this.recipientDB.find().exec() } catch (e) { console.log(e) }  }
+
+  async findOne(id: string): Promise<Recipient> {
+    return await this.supsService.validateRecipient(id)
   }
 
   async update(id: ObjectId, updateRecipientDto: UpdateRecipientDto) {

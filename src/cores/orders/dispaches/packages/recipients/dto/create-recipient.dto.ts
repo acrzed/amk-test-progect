@@ -43,6 +43,10 @@ export class CreateRecipientDto {
   @Prop({ type: Date, default: Date.now() })
   readonly enterDate: Date
 
+  @ApiProperty({ example: 'df9bc892-cdb3-11eb-8513-b88303659df5', description: 'API NP REF получателя' })
+  @Prop({ type: String })
+  ref: string
+
   @ApiProperty({ example: 'комментарий', description: 'комментарий, заметки, описание' })
   @Prop({ type: String })
   readonly desc: string

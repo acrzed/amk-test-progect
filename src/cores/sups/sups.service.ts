@@ -92,6 +92,21 @@ export class SupsService {
     return payHash
   }
 
+  async validateRecipientByPhone(phone, lastName, name, middleName){
+    let recipient
+    try { recipient = await this.recipientDB.findOne({phone: phone}) } catch (e) { console.log(e) }
+    if ( recipient && recipient.lastName == lastName && recipient.name == name && recipient.middleName == middleName && recipient.phone == phone) { throw new HttpException({ message: `Ошибка - получатель - ${recipient.lastName} ${recipient.name} ${recipient.middleName} с телефоном №${recipient.phone} - уже существует!` }, HttpStatus.CONFLICT) }
+    return true
+  }
+
+  async validateRecipient(idRecipient){
+    if ( !mongoose.isValidObjectId(idRecipient) ){ throw new HttpException({ message: `ID получателя #${idRecipient} не корректен!` }, HttpStatus.BAD_REQUEST)}
+    let recipient
+    try { recipient = await this.recipientDB.findById( idRecipient ) } catch (e) { console.log(e) }
+    if ( !recipient ){ throw new HttpException({ message: `Получатель с ID #${idRecipient} не найден` }, HttpStatus.NOT_FOUND)}
+    return recipient
+  }
+
   validateDesc(desc){
     if (!desc) {
       throw new HttpException({ message: `Необходимо указать причину удаления` }, HttpStatus.NOT_FOUND);
