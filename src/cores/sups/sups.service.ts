@@ -98,9 +98,11 @@ export class SupsService {
     return desc
   }
 
-  dateToString (date){
-    let formatter1 = new Intl.DateTimeFormat("ru");
-    return formatter1.format(date)
+  dateToString (date: any) {
+    let moment = require('moment'); // require
+    if ( !moment(date).isValid() ){
+      throw new HttpException({ message: `данные даты - ${date} не корректны!` }, HttpStatus.CONFLICT)}
+    return moment(date).format("DD.MM.YYYY HH:mm");
   }
 
   stringToDate(date: string, time: string){

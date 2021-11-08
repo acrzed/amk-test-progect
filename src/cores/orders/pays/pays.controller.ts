@@ -19,21 +19,23 @@ import { RemoveTrashDto } from '../../../comCores/trashs/dto/remove-trash.dto';
 export class PaysController {
   constructor(private readonly paysService: PaysService) {}
 
-  @ApiOperation({ summary: 'Добавить новую оплату клиента' ,description:'Точка доступа для добавления новых оплат клиента, доступ только для админов' })
+  @ApiOperation({ summary: 'Добавить новую оплату клиента' ,description:'Точка доступа для добавления новых оплат клиента, доступ только для админов и продажников' })
   @ApiResponse({ status: 200, type: Pay})
   @Post()
   create(@Body() createPayDto: CreatePayDto): Promise<Pay> {
     return this.paysService.create(createPayDto);
   }
 
+  @ApiOperation({ summary: 'Все оплаты клиента' ,description:'Все оплаты клиента, доступ только для админов и продажников' })
+  @ApiResponse({ status: 200, type: [Pay]})
   @Get()
-  findAll() {
+  findAll(): Promise<Pay[]> {
     return this.paysService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.paysService.findOne(+id);
+  findOne(@Param('id') id: string): Promise<Pay> {
+    return this.paysService.findByID(id);
   }
 
   @Patch(':id')

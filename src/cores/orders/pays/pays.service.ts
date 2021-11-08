@@ -40,12 +40,12 @@ export class PaysService {
     return await this.payDB.create({...dto, payHash: payHash, payDateTime: pDate})
   }
 
-  async findAll() {
-    return this.supsService.stringToDate("21.12.2021", "23:45");
+  async findAll(): Promise<Pay[]> {
+    try { return this.payDB.find().exec(); } catch (e) { console.log(e) }
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} pay`;
+  async findByID(id: string): Promise<Pay> {
+    try { return await this.supsService.validatePay(id); } catch (e) { console.log(e) };
   }
 
   async update(id: number, updatePayDto: UpdatePayDto) {

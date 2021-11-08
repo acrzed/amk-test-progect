@@ -43,6 +43,18 @@ export class OrdersService {
     return client;
   }
 
+  async findAllOrders(): Promise<Order[]> {
+    try { return await this.orderDB.find().exec(); } catch (e) { console.log(e) }
+}
+
+  async findOrderByID(id: Order): Promise<Order> {
+    try { return await this.supsService.validateOrder(id); } catch (e) { console.log(e) }
+  }
+
+  async updateOrder(id: number, updateOrderDto: UpdateOrderDto) {
+    return `This action updates a #${id} order`;
+  }
+
   async removeOrder(id: Order, dto: RemoveTrashDto): Promise<Client> {
     const { idCreator, desc } = dto;
     await this.supsService.validateCreator(idCreator);
@@ -63,19 +75,5 @@ export class OrdersService {
       });
     return client;
   }
-
-  async findAllOrders(): Promise<Order[]> {
-    return await this.orderDB.find().exec();
-  }
-
-  async findOrderByID(id: Order): Promise<Order> {
-    return await this.supsService.validateOrder(id)
-
-  }
-
-  updateOrder(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
-  }
-
 
 }
