@@ -24,13 +24,13 @@ export class Trash {
 
   @ApiProperty({ example: 'UserID', description: 'UserID - ID создателя' })
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-  idCreator: User;
+  idCreator: string;
 
   @ApiProperty({ example: 'Дата удаления', description: 'Date' })
   @Prop({ type: Date, default: Date.now() })
   removeDate: Date;
 
-  @ApiProperty({ example: 'User ID', description: 'UserID - ID пользователя' })
+  @ApiProperty({ example: 'User', description: 'пользователь' })
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   idUser: User;
 
@@ -42,11 +42,11 @@ export class Trash {
   @Prop()
   role: string;
 
-  @ApiProperty({ example: 'Depart ID', description: 'Depart ID - ID отдела' })
+  @ApiProperty({ example: 'Depart', description: 'отдел' })
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Depart' })
   idDepart: Depart;
 
-  @ApiProperty({example:'Channel ID', description:'ID канала'})
+  @ApiProperty({example:'ChannelName', description:'Название канала'})
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'ChannelName' })
   idChannelName: ChannelName;
 
@@ -54,7 +54,7 @@ export class Trash {
   @Prop({ type: String })
   channel: string;
 
-  @ApiProperty({example:'Channel ID', description:'ID канала'})
+  @ApiProperty({example:'UserChannel', description:'канал пользователя'})
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'UserChannel' })
   idUserChannel: UserChannel;
 
@@ -62,7 +62,7 @@ export class Trash {
   @Prop({ type: String })
   nick: string;
 
-  @ApiProperty({example:'ClientPhone ID', description:'ID телефона пользователя'})
+  @ApiProperty({example:'UserPhone', description:'телефон пользователя'})
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'UserPhone' })
   idUserPhone: UserPhone;
 
@@ -70,7 +70,7 @@ export class Trash {
   @Prop({ type: String })
   phone: number;
 
-  @ApiProperty({example:'Client ID', description:'ID клиента'})
+  @ApiProperty({example:'Client', description:'клиент'})
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Client' })
   idClient: Client;
 
@@ -78,21 +78,21 @@ export class Trash {
   // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Phone' })
   // idPhone: Phone;
 
-  @ApiProperty({example:'Channel ID', description:'ID канала'})
+  @ApiProperty({example:'ClientChannel', description:'канал клиента'})
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'ClientChannel' })
   idClientChannel: ClientChannel;
 
-  @ApiProperty({example:'ClientPhone ID', description:'ID телефона пользователя'})
+  @ApiProperty({example:'ClientPhone', description:'телефон клиента'})
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'ClientPhone' })
   idClientPhone: ClientPhone;
 
-  @ApiProperty({example:'Order ID', description:'ID заказа'})
+  @ApiProperty({example:'Заказ', description:'заказ'})
   @Prop({ type: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' } })
   order: Order;
 
-  @ApiProperty({ example: 'ID оплаты', description: 'все получатели клиента' })
+  @ApiProperty({ example: 'Оплата', description: 'оплата' })
   @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pay'}] })
-  pays: Pay;
+  pay: Pay;
 
   @ApiProperty({ example: 'ID оплаты', description: 'все получатели клиента' })
   @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Dispatch'}] })

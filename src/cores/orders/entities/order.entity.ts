@@ -5,6 +5,7 @@ import * as mongoose from 'mongoose';
 
 import { User } from '../../users/user.model';
 import { Client } from '../../clients/entities/client.entity';
+import { Pay } from '../pays/entities/pay.entity';
 
 
 export type OrderDocument = Order & Document;
@@ -70,6 +71,14 @@ export class Order {
   @ApiProperty({ example: false, description: 'Заказ отменён' })
   @Prop({ required: true, type: Boolean, default: false })
   orderCancel: boolean;
+
+  @ApiProperty({ example: 'ID оплаты', description: 'все оплаты клиента' })
+  @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pay'}] })
+  pays: [string];
+
+  @ApiProperty({ example: 'ID оплаты', description: 'все получатели клиента' })
+  @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Dispatch'}] })
+  dispatchs: [string];
 
   @ApiProperty({ example: 'комментарий', description: 'комментарий, заметки, описание' })
   @Prop({ type: String })

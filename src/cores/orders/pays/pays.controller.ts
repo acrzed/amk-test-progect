@@ -33,18 +33,24 @@ export class PaysController {
     return this.paysService.findAll();
   }
 
+  @ApiOperation({ summary: 'Найти оплату клиента по ID' ,description:'Точка доступа для поиска оплат клиента по ID, доступ только для админов и продажников' })
+  @ApiResponse({ status: 200, type: Pay})
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Pay> {
     return this.paysService.findByID(id);
   }
 
+  @ApiOperation({ summary: 'Найти и изменить оплату клиента по ID' ,description:'Точка доступа для поиска и редактирования оплат клиента по ID, доступ только для админов и продажников' })
+  @ApiResponse({ status: 200, type: Pay})
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePayDto: UpdatePayDto) {
-    return this.paysService.update(+id, updatePayDto);
+  update(@Param('id') id: string, @Body() updatePayDto: UpdatePayDto): Promise<Pay> {
+    return this.paysService.update(id, updatePayDto);
   }
 
+  @ApiOperation({ summary: 'Найти и удалить оплату клиента по ID' ,description:'Точка доступа для поиска и удаления оплат клиента по ID, доступ только для админов и продажников' })
+  @ApiResponse({ status: 200, type: Pay})
   @Delete(':id')
-  remove(@Param('id') id: Pay, @Body() dto: RemoveTrashDto): Promise<Pay> {
+  remove(@Param('id') id: string, @Body() dto: RemoveTrashDto): Promise<Pay> {
     return this.paysService.remove(id, dto);
   }
 }

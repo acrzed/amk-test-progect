@@ -55,7 +55,7 @@ export class OrdersService {
     return `This action updates a #${id} order`;
   }
 
-  async removeOrder(id: Order, dto: RemoveTrashDto): Promise<Client> {
+  async removeOrder(id: string, dto: RemoveTrashDto): Promise<Client> {
     const { idCreator, desc } = dto;
     await this.supsService.validateCreator(idCreator);
     await this.supsService.validateDesc(desc);

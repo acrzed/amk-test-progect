@@ -84,7 +84,7 @@ export class UsersService {
     try { return await this.userDB.find().populate('depart') } catch (e) { console.log(e) }
   }
 
-  async removeUser(id: User, dto: RemoveTrashDto): Promise<User> {
+  async removeUser(id: string, dto: RemoveTrashDto): Promise<User> {
     const { idCreator, desc } = dto
     // проверка ID и наличие пользователей
     if (id === idCreator) { throw new HttpException({ message: `Ошибка - невозможно удалить самого себя!` }, HttpStatus.CONFLICT);}

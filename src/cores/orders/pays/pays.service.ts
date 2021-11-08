@@ -28,37 +28,62 @@ export class PaysService {
 
   async create(dto: CreatePayDto): Promise<Pay> {
     // проверка DTO
-    await this.supsService.validateDTO(dto, 7)
-    const { idCreator, idClient, idOrder, payDate, payTime, paySum, createDate } = dto
+    await this.supsService.validateDTO(dto, 6)
+    const { idCreator, idOrder, payDate, payTime, paySum} = dto
     // проверка исходны данных
     await this.supsService.validateCreator(idCreator)
-    await this.supsService.validateClient(idClient)
-    await this.supsService.validateOrder(idOrder)
+    let order = await this.supsService.validateOrder(idOrder, 0)
     const pDate = await this.supsService.stringToDate(payDate, payTime)
     // проверка оплаты
-    const payHash = await this.supsService.validatePayHash(idOrder, payDate, payTime, paySum)
-    return await this.payDB.create({...dto, payHash: payHash, payDateTime: pDate})
+    const payHash = await this.supsService.validatePayHash(idOrder, pDate, paySum)
+    let pay = await this.payDB.create({...dto, payHash: payHash, payDateTime: pDate})
+    order.pays.push(pay.id)
+    order.save()
+    return pay
   }
 
   async findAll(): Promise<Pay[]> {
-    try { return this.payDB.find().exec(); } catch (e) { console.log(e) }
+    return this.payDB.find().exec()
   }
 
   async findByID(id: string): Promise<Pay> {
-    try { return await this.supsService.validatePay(id); } catch (e) { console.log(e) };
+    return await this.supsService.validatePay(id)
   }
 
-  async update(id: number, updatePayDto: UpdatePayDto) {
-    return `This action updates a #${id} pay`;
+  async update(id: string, dto: UpdatePayDto): Promise<Pay> {
+    const { payDate, payTime, paySum, desc } = dto
+    let pay = await this.supsService.validatePay(id);
+    let pDate = pay.payDateTime, pHash = pay.payHash, pSum = pay.paySum, pDesc = !pay.desc ? "" : pay.desc
+    if (payDate && payTime){pDate = await this.supsService.stringToDate(payDate, payTime)}
+    if (paySum){pSum = paySum}
+    if (desc){pDesc = desc}
+    if (payDate && payTime || paySum){
+      pHash = await this.supsService.validatePayHash(pay.idOrder, pDate, paySum)}
+    pay
+      .$set('payDateTime', pDate)
+      .$set('paySum', pSum)
+      .$set('payHash', pHash)
+      .$set('desc', pDesc)
+    return await pay.save()
   }
 
-  async remove(id: Pay, dto: RemoveTrashDto): Promise<Pay> {
+  async remove(id: string, dto: RemoveTrashDto): Promise<Pay> {
     const { idCreator, desc } = dto
-    let creator = await this.supsService.validateCreator(idCreator)
     let pay = await this.supsService.validatePay(id)
-    let client = await this.supsService.validateClient(pay.idClient)
-    // нет корзины - trash
-    return pay;
+    await this.supsService.validateDesc(desc)
+    let creator = await this.supsService.validateCreator(idCreator)
+    let order = await this.supsService.validateOrder(pay.idOrder, 0)
+    try {
+      if (order.pays.indexOf(id) != -1){
+        await order.pays.splice(order.pays.indexOf(id), 1)
+        await order.save();
+      } }  catch (e) { console.log(e) }
+    try {
+      const trashPay = await new this.trashDB({
+        idCreator: creator, removeDate: Date.now(), pay: pay, desc: desc
+      })
+      await trashPay.save() } catch (e) { console.log(e) }
+    return await pay.remove();
   }
 
 }

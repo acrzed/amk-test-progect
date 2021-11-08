@@ -18,11 +18,6 @@ export class CreatePayDto {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   readonly idCreator: string;
 
-  @ApiProperty({ required: true, example:'ClientID', description:'ID клиента'})
-  @IsNotEmpty({ message: 'ID клиента не может быть пустым!'})
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Client' })
-  readonly idClient: string
-
   @ApiProperty({ required: true, example:'OrderID', description:'ID заказа'})
   @IsNotEmpty({ message: 'ID заказа не может быть пустым!'})
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Order' })

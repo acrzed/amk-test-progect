@@ -144,7 +144,7 @@ export class ClientsService {
     // удалить каналы
     await client.channels.forEach((id: ClientChannel) => {this.channelService.removeChannel(id, dto)})
     // удалить заказы
-    await client.orders.forEach((id: Order) => {this.orderService.removeOrder(id, dto)})
+    await client.orders.forEach((id: string) => {this.orderService.removeOrder(id, dto)})
     // удалить оплаты
 
     // удалить отправки

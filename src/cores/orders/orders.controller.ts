@@ -30,7 +30,7 @@ export class OrdersController {
   @ApiOperation({ summary: 'Удаление заказа клиента' ,description:'Точка доступа для удаления клиента, доступ только для админов и отдела продаж' })
   @ApiResponse({ status: 200, type: Client })
   @Delete(':id')
-  removeClientOrder(@Param('id') id: Order, @Body() dto: RemoveTrashDto) {
+  removeClientOrder(@Param('id') id: string, @Body() dto: RemoveTrashDto) {
     return this.ordersService.removeOrder(id, dto);
   }
   // @ApiOperation({ summary: 'Создание заказа' ,description:'Точка доступа для создания заказа, доступ только для админов и отдела продаж' })

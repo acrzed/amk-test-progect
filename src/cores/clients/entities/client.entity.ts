@@ -8,7 +8,6 @@ import { Order } from '../../orders/entities/order.entity';
 import { ClientChannel } from '../client-channels/entities/client-channel.entity';
 import { ClientPhone } from '../client-phones/entities/client-phone.entity';
 import { Recipient } from '../../orders/dispaches/packages/recipients/entities/recipient.entity';
-import { Pay } from '../../orders/pays/entities/pay.entity';
 import { Dispatch } from '../../orders/dispaches/entities/dispatch.entity';
 
 
@@ -42,15 +41,8 @@ export class Client {
 
   @ApiProperty({ example: 'ID заказа', description: 'все заказы клиента' })
   @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Order'}] })
-  orders: Order[];
+  orders: [string];
 
-  @ApiProperty({ example: 'ID оплаты', description: 'все получатели клиента' })
-  @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pay'}] })
-  pays: Pay[];
-
-  @ApiProperty({ example: 'ID оплаты', description: 'все получатели клиента' })
-  @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Dispatch'}] })
-  dispatchs: Dispatch[];
 
   @ApiProperty({ example: 'ID получателя', description: 'все получатели клиента' })
   @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Recipient'}] })

@@ -67,10 +67,11 @@ export class SupsService {
     return client
   }
 
-  async validateOrder(idOrder){
+  async validateOrder(idOrder, key = 1){
     if ( !mongoose.isValidObjectId(idOrder) ){  throw new HttpException({ message: `ID заказа #${idOrder} не корректен!` }, HttpStatus.BAD_REQUEST)}
     let order
-    try { order = await this.orderDB.findById(idOrder) } catch (e) { console.log(e) }
+    if (key === 0) { try { order = await this.orderDB.findById(idOrder) } catch (e) { console.log(e) } }
+    else try { order = await this.orderDB.findById(idOrder).populate('pays') } catch (e) { console.log(e) }
     if ( !order ){ throw new HttpException({ message: `Заказ с ID #${idOrder} не найден` }, HttpStatus.NOT_FOUND)}
     return order
   }
@@ -83,11 +84,11 @@ export class SupsService {
     return pay
   }
 
-  async validatePayHash(idOrder, payDate, payTime, paySum) {
+  async validatePayHash(idOrder, payDateTime, paySum) {
     let pay
-    let payHash = String(idOrder) + String(payDate) + String(paySum) + String(payTime)
+    let payHash = String(idOrder) + '-' + String(paySum) + '-' + String(this.dateToString(payDateTime))
     try { pay = await this.payDB.findOne({payHash: payHash}) } catch (e) { console.log(e) }
-    if ( pay ){ throw new HttpException({ message: `Оплата заказа с ID #${idOrder} от ${payDate} ${payTime} на сумму ${paySum} уже зафиксирована!` }, HttpStatus.NOT_FOUND)}
+    if ( pay ){ throw new HttpException({ message: `Оплата заказа с ID #${idOrder} от ${this.dateToString(payDateTime)} на сумму ${paySum} уже зафиксирована!` }, HttpStatus.NOT_FOUND)}
     return payHash
   }
 

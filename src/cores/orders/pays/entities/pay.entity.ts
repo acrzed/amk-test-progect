@@ -50,7 +50,7 @@ export class Pay {
   @Prop({ type: Number })
   paySum: number;
 
-  @ApiProperty({ required: true, uniqueItems:true, type: String,  example: '', description: 'Хэш оплаты - строка: idOrder + дата + время + сумма' })
+  @ApiProperty({ required: true, uniqueItems:true, type: String, example: '', description: 'Хэш оплаты - строка: idOrder + дата + время + сумма' })
   @IsString({message:'должно быть строкой'})
   @Prop({ type: String, unique: true, required: true })
   payHash: string;

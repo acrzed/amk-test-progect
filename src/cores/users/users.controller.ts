@@ -10,6 +10,7 @@ import { RolesGuard } from '../../auth/roles.guard';
 import { RoleAddDto } from './dto/role-add.dto';
 import { DepartUpdateDto } from './dto/depart-update.dto';
 import { RemoveDto } from '../../comCores/dto/remove.dto';
+import { RemoveTrashDto } from '../../comCores/trashs/dto/remove-trash.dto';
 
 @UsePipes(ValidationPipe)
 @UseGuards(JwtAuthGuard)
@@ -53,7 +54,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Удаление пользователя' ,description:'Точка доступа для удаления пользователя, доступ для админов' })
   @ApiResponse({ status: 200, type: User })
   @Delete(':id')
-  removeUser(@Param('id') id: User, @Body() dto: RemoveDto): Promise<User> {
+  removeUser(@Param('id') id: string, @Body() dto: RemoveTrashDto): Promise<User> {
     return this.userService.removeUser( id, dto );
   }
 
