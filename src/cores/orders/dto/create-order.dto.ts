@@ -1,12 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Prop } from '@nestjs/mongoose';
-import { User } from '../../users/user.model';
 import { Client } from '../../clients/entities/client.entity';
 import * as mongoose from 'mongoose';
+import { User } from '../../users/user.model';
+import { Length } from 'class-validator';
 
 export class CreateOrderDto {
-  @ApiProperty({ example: 'ID', description: 'ID order - автоматически' })
-  readonly _id: mongoose.Schema.Types.ObjectId;
 
   @ApiProperty({ example: 'UserID', description: 'UserID - ID создателя' })
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
@@ -17,8 +16,13 @@ export class CreateOrderDto {
   readonly idClient: Client
 
   @ApiProperty({ example: 'заказ', description: 'содержимое заказа' })
-  @Prop({ required: true, type: String })
+  @Length(10, 5000, {message: 'содержимое заказа'})
+  @Prop({ required: true, type: String, minlength: 10 })
   readonly basket: string;
+
+  @ApiProperty({ example: 'Цена заказа', description: 'сумма единиц заказа по стандартной цене' })
+  @Prop({ required: true, type: Number, minlength: 3 })
+  readonly orderSum: number;
 
   @ApiProperty({ example: 'индпошив', description: 'индпошив в заказе' })
   @Prop({ type: String })
@@ -31,10 +35,6 @@ export class CreateOrderDto {
   @ApiProperty({ example: 'Цена индпошива', description: 'стоимость индпошива' })
   @Prop({ type: Number })
   readonly indPay: number;
-
-  @ApiProperty({ example: 'Цена заказа', description: 'цена содержимого заказа в сумме' })
-  @Prop({ required: true, type: Number })
-  readonly orderSum: number;
 
   @ApiProperty({ example: 'Скидка', description: 'скидка в сумме' })
   @Prop({ type: Number })

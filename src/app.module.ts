@@ -19,7 +19,7 @@ import { SupsModule } from './cores/sups/sups.module';
       envFilePath: '.env'
     }),
     MongooseModule.forRoot('mongodb+srv://acridzed:GHYEgbSyEv3dsENw@amkcrm.jeeyu.mongodb.net/staff?retryWrites=true&w=majority', {
-    //MongooseModule.forRoot('mongodb://localhost/CRM', {
+    // MongooseModule.forRoot('mongodb://localhost/AMK-CRM', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,

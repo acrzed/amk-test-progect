@@ -14,8 +14,13 @@ import { ChannelName } from '../../channel-names/entities/channel-name.entity';
 import { ClientChannel } from '../../../cores/clients/client-channels/entities/client-channel.entity';
 import { ClientPhone } from '../../../cores/clients/client-phones/entities/client-phone.entity';
 import { Pay } from '../../../cores/orders/pays/entities/pay.entity';
-import { Dispatch } from '../../../cores/orders/dispaches/entities/dispatch.entity';
-import { Recipient } from '../../../cores/orders/dispaches/packages/recipients/entities/recipient.entity';
+import { Recipient } from '../../../cores/orders/packages/recipients/entities/recipient.entity';
+import { PostSrv } from '../../../cores/orders/packages/posts/entities/postSrv.entity';
+import { City } from '../../../cores/orders/packages/cities/entities/city.entity';
+import { PostService } from '../../../cores/orders/packages/posts/postServices/entities/postService.entity';
+import { OrderType } from '../../../cores/orders/order-types/entities/order-type.entity';
+import { OrderStat } from '../../../cores/orders/order-stats/entities/order-stat.entity';
+import { Package } from '../../../cores/orders/packages/entities/package.entity';
 
 export type TrashDocument = Trash & Document
 
@@ -75,7 +80,7 @@ export class Trash {
   idClient: Client;
 
   // @ApiProperty({example:'ClientPhone ID', description:'ID телефона пользователя'})
-  // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Phone' })
+  // @Prop({ ordType: mongoose.Schema.Types.ObjectId, ref: 'Phone' })
   // idPhone: Phone;
 
   @ApiProperty({example:'ClientChannel', description:'канал клиента'})
@@ -94,9 +99,29 @@ export class Trash {
   @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pay'}] })
   pay: Pay;
 
+  @ApiProperty({ example: 'Новая Почта', description: 'название почтового сервиса' })
+  @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'PostSrv'}] })
+  post: PostSrv;
+
+  @ApiProperty({ example: 'Одесса', description: 'город' })
+  @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'City'}] })
+  city: City;
+
+  @ApiProperty({ example: 'Одесса', description: 'город' })
+  @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'City'}] })
+  postServices: PostService;
+
+  @ApiProperty({ example: 'возврат', description: 'тип заказа' })
+  @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'OrderType'}] })
+  orderType: OrderType;
+
+  @ApiProperty({ example: 'принят - ожидание оплаты', description: 'статус заказа' })
+  @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'OrderStat'}] })
+  orderStat: OrderStat;
+
   @ApiProperty({ example: 'ID оплаты', description: 'все получатели клиента' })
-  @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Dispatch'}] })
-  dispatchs: Dispatch;
+  @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Package'}] })
+  package: Package;
 
   @ApiProperty({ example: 'ID получателя', description: 'все получатели клиента' })
   @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Recipient'}] })
@@ -107,7 +132,7 @@ export class Trash {
   basket: string;
 
   // @ApiProperty({example:'Pay ID', description:'ID оплаты'})
-  // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Pay' })
+  // @Prop({ ordType: mongoose.Schema.Types.ObjectId, ref: 'Pay' })
   // idChannel: Pay;
 
   @ApiProperty({example:'заметки', description:'комментарий'})

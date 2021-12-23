@@ -2,7 +2,19 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../../../auth/jwt-auth.guard';
 import { Roles } from '../../../../../auth/role-auth.decorator';
 import { RolesGuard } from '../../../../../auth/roles.guard';
-import { UseGuards, UsePipes, Body, Controller, Param, Get, Patch, Post, ValidationPipe, Delete } from '@nestjs/common';
+import {
+  UseGuards,
+  UsePipes,
+  Body,
+  Controller,
+  Param,
+  Get,
+  Patch,
+  Post,
+  ValidationPipe,
+  Delete,
+  Put,
+} from '@nestjs/common';
 
 import { RecipientsService } from './recipients.service';
 import { CreateRecipientDto } from './dto/create-recipient.dto';
@@ -10,6 +22,7 @@ import { UpdateRecipientDto } from './dto/update-recipient.dto';
 import { Recipient } from './entities/recipient.entity';
 import { ObjectId } from 'mongoose';
 import { RemoveRecipientDto } from './dto/remove-recipient.dto';
+import { RemoveTrashDto } from '../../../../../comCores/trashs/dto/remove-trash.dto';
 
 @ApiTags('Получатели отправлений')
 @UsePipes(ValidationPipe)
@@ -49,12 +62,13 @@ export class RecipientsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: ObjectId, @Body() updateRecipientDto: UpdateRecipientDto) {
+  update(@Param('id') id: string, @Body() updateRecipientDto: UpdateRecipientDto) {
     return this.recipientsService.update(id, updateRecipientDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: ObjectId, @Body() dto: RemoveRecipientDto) {
+  remove(@Param('id') id: string, @Body() dto: RemoveTrashDto) {
     return this.recipientsService.remove(id, dto);
   }
+
 }

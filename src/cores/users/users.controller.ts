@@ -9,7 +9,6 @@ import { Roles } from '../../auth/role-auth.decorator';
 import { RolesGuard } from '../../auth/roles.guard';
 import { RoleAddDto } from './dto/role-add.dto';
 import { DepartUpdateDto } from './dto/depart-update.dto';
-import { RemoveDto } from '../../comCores/dto/remove.dto';
 import { RemoveTrashDto } from '../../comCores/trashs/dto/remove-trash.dto';
 
 @UsePipes(ValidationPipe)

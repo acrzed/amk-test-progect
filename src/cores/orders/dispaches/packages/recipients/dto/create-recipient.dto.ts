@@ -34,14 +34,13 @@ export class CreateRecipientDto {
   readonly middleName: string
 
   @ApiProperty({ example: '093********', description: 'телефон получателя' })
-  @IsNumber()
-  //@Length(10,10, {message:'требуется phone: номер телефона вида 098*******, 10 цифр'})
-  @Prop({ required: true, type: Number, minlength: 10, maxlength: 10 })
-  readonly phone: number;
+  @Length(10,15, {message:'требуется phone: номер телефона вида 098*******, минимум 10 цифр'})
+  @Prop({ required: true, type: String })
+  readonly phone: string;
 
   @ApiProperty({ example: '01.01.2021', description: 'Дата создания' })
-  @Prop({ type: Date, default: Date.now() })
-  readonly enterDate: Date
+  @Prop({ type: String, default: Date.now() })
+  readonly enterDate: string
 
   @ApiProperty({ example: 'df9bc892-cdb3-11eb-8513-b88303659df5', description: 'API NP REF получателя' })
   @Prop({ type: String })

@@ -7,8 +7,7 @@ import { User } from '../../users/user.model';
 import { Order } from '../../orders/entities/order.entity';
 import { ClientChannel } from '../client-channels/entities/client-channel.entity';
 import { ClientPhone } from '../client-phones/entities/client-phone.entity';
-import { Recipient } from '../../orders/dispaches/packages/recipients/entities/recipient.entity';
-import { Dispatch } from '../../orders/dispaches/entities/dispatch.entity';
+import { Recipient } from '../../orders/packages/recipients/entities/recipient.entity';
 
 
 export type ClientDocument = Client & Document
@@ -46,7 +45,7 @@ export class Client {
 
   @ApiProperty({ example: 'ID получателя', description: 'все получатели клиента' })
   @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Recipient'}] })
-  recipients: Recipient[];
+  recipients: [string];
 
   @ApiProperty({ example: 'очень нудный, петляй сразу', description: 'комментарий, описание' })
   @Prop({ type: String })

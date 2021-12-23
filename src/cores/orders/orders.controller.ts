@@ -5,8 +5,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { Roles } from '../../auth/role-auth.decorator';
 import { RolesGuard } from '../../auth/roles.guard';
-import { Client } from '../clients/entities/client.entity';
-import { AddOrderDto } from './dto/add-order.dto';
+import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './entities/order.entity';
 import { RemoveTrashDto } from '../../comCores/trashs/dto/remove-trash.dto';
 
@@ -21,28 +20,18 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @ApiOperation({ summary: 'Добавить новый заказ клиента' ,description:'Точка доступа для добавления новых каналов коммуникации с клиентом, доступ только для админов и отдела продаж' })
-  @ApiResponse({ status: 200, type: Client })
+  @ApiResponse({ status: 200, type: Order })
   @Post()
-  addClientOrder(@Body() addOrder: AddOrderDto) {
+  addClientOrder(@Body() addOrder: CreateOrderDto) {
     return this.ordersService.addOrder(addOrder);
   }
 
   @ApiOperation({ summary: 'Удаление заказа клиента' ,description:'Точка доступа для удаления клиента, доступ только для админов и отдела продаж' })
-  @ApiResponse({ status: 200, type: Client })
+  @ApiResponse({ status: 200, type: Order })
   @Delete(':id')
   removeClientOrder(@Param('id') id: string, @Body() dto: RemoveTrashDto) {
     return this.ordersService.removeOrder(id, dto);
   }
-  // @ApiOperation({ summary: 'Создание заказа' ,description:'Точка доступа для создания заказа, доступ только для админов и отдела продаж' })
-  // @ApiResponse({ status: 200, type: Order })
-  // @UsePipes(ValidationPipe)
-  // @UseGuards(JwtAuthGuard)
-  // @Roles('ADMIN', 'SELLER')
-  // @UseGuards(RolesGuard)
-  // @Post()
-  // createOrder(@Body() createOrderDto: CreateOrderDto) {
-  //   return this.ordersService.createOrder(createOrderDto);
-  // }
 
   @Get()
   findAllOrders(): Promise<Order[]> {

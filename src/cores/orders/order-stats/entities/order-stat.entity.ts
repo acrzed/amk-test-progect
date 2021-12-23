@@ -1,10 +1,11 @@
-import { Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 
 export type OrderStatDocument = OrderStat & Document
 
+@Schema()
 export class OrderStat {
 
   @ApiProperty({ example: 'ID', description: 'ID order - автоматически' })

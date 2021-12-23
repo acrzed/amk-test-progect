@@ -93,28 +93,28 @@ export class ClientsController {
 }
 /*
   @ApiOperation({ summary: 'Добавить новый номер телефона клиента' ,description:'Точка доступа для добавления новых номеров телефона клиента, доступ только для админов и отдела продаж' })
-  @ApiResponse({ status: 200, type: Client })
-  @Post('/phones')
+  @ApiResponse({ status: 200, ordType: Client })
+  @PostSrv('/phones')
   addClientPhone(@Body() addPhone: AddClientPhoneDto) {
     return this.clientsService.addClientPhone(addPhone);
   }
 
   @ApiOperation({ summary: 'Удалить номер телефона клиента' ,description:'Точка доступа для удаления номера телефона клиента, доступ только для админов и отдела продаж' })
-  @ApiResponse({ status: 200, type: Client })
+  @ApiResponse({ status: 200, ordType: Client })
   @Delete('/phones')
   removeClientPhone(@Body() removePhone: RemovePhoneDto) {
     return this.clientsService.removeClientPhone(removePhone);
   }
 
   @ApiOperation({ summary: 'Добавить новый канал клиента' ,description:'Точка доступа для добавления новых каналов коммуникации с клиентом, доступ только для админов и отдела продаж' })
-  @ApiResponse({ status: 200, type: Client })
-  @Post('/channel')
+  @ApiResponse({ status: 200, ordType: Client })
+  @PostSrv('/channel')
   addClientChannel(@Body() addChannel: AddChannelDto) {
     return this.clientsService.addChannel(addChannel);
   }
 
   @ApiOperation({ summary: 'Удаление канала клиента' ,description:'Точка доступа для удаления клиента, доступ только для админов и отдела продаж' })
-  @ApiResponse({ status: 200, type: Client })
+  @ApiResponse({ status: 200, ordType: Client })
   @Delete('/channel/del')
   removeClientChannel(@Body() dto: RemoveChannelDto) {
     return this.clientsService.removeChannel(dto);

@@ -13,7 +13,7 @@ import { RemoveTrashDto } from './dto/remove-trash.dto';
 export class TrashController {
   constructor(private readonly trashService: TrashService) {}
 
-  @ApiOperation({ description:'Точка доступа для получения всех записей корзины, доступ только для админов', summary: 'Создание подразделения' })
+  @ApiOperation({ description:'Точка доступа для получения всех записей корзины, доступ только для админов', summary: 'Вся корзина' })
   @ApiResponse({ status: 200, type: [Trash] })
   @UsePipes(ValidationPipe)
   @UseGuards(JwtAuthGuard)
@@ -24,7 +24,7 @@ export class TrashController {
     return this.trashService.findAll();
   }
 
-  @ApiOperation({ description:'Точка доступа для получения всех записей корзины, доступ только для админов', summary: 'Создание подразделения' })
+  @ApiOperation({ description:'Точка доступа для удаления всех записей корзины, доступ только для админов', summary: 'Очистить корзину' })
   @ApiResponse({ status: 200, type: User })
   @UsePipes(ValidationPipe)
   @UseGuards(JwtAuthGuard)

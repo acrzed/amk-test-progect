@@ -9,7 +9,7 @@ import { ClientPhone, ClientPhoneDocument } from './client-phones/entities/clien
 import { Order, OrderDocument } from '../orders/entities/order.entity';
 import { Pay, PayDocument } from '../orders/pays/entities/pay.entity';
 import { Dispatch, DispatchDocument } from '../orders/dispaches/entities/dispatch.entity';
-import { Recipient, RecipientDocument } from '../orders/dispaches/packages/recipients/entities/recipient.entity';
+import { Recipient, RecipientDocument } from '../orders/packages/recipients/entities/recipient.entity';
 import { Trash, TrashDocument } from '../../comCores/trashs/entities/trash.entity';
 
 import { CreateClientDto } from './dto/create-client.dto';
@@ -21,7 +21,7 @@ import { ClientChannelsService } from './client-channels/client-channels.service
 import { OrdersService } from '../orders/orders.service';
 import { PaysService } from '../orders/pays/pays.service';
 import { DispatchsService } from '../orders/dispaches/dispatchs.service';
-import { RecipientsService } from '../orders/dispaches/packages/recipients/recipients.service';
+import { RecipientsService } from '../orders/packages/recipients/recipients.service';
 import { UsersService } from '../users/users.service';
 import { SupsService } from '../sups/sups.service';
 

@@ -23,6 +23,7 @@ export class AuthService {
   async registration ( userDto: UserCreateDto){
     const hashPassword = await bcrypt.hash(userDto.password, 5)
     const user = await this.userService.createUser({...userDto, password:hashPassword})
+    console.log('Добавлен новый пользователь - ', user)
     return this.generateToken(user)
 
   }

@@ -12,16 +12,15 @@ import { OrdersModule } from '../orders/orders.module';
 import { ClientChannel, ClientChannelSchema } from './client-channels/entities/client-channel.entity';
 import { PaysModule } from '../orders/pays/pays.module';
 import { DispatchsModule } from '../orders/dispaches/dispatchs.module';
-import { RecipientsModule } from '../orders/dispaches/packages/recipients/recipients.module';
+import { RecipientsModule } from '../orders/packages/recipients/recipients.module';
 import { ClientPhone, ClientPhoneSchema } from './client-phones/entities/client-phone.entity';
 import { Dispatch, DispatchSchema } from '../orders/dispaches/entities/dispatch.entity';
 import { Pay, PaySchema } from '../orders/pays/entities/pay.entity';
-import { Recipient, RecipientSchema } from '../orders/dispaches/packages/recipients/entities/recipient.entity';
+import { Recipient, RecipientSchema } from '../orders/packages/recipients/entities/recipient.entity';
 import { ClientPhonesModule } from './client-phones/client-phones.module';
 import { ClientChannelsModule } from './client-channels/client-channels.module';
 import { UsersModule } from '../users/users.module';
 import { PaysService } from '../orders/pays/pays.service';
-import { UsersService } from '../users/users.service';
 import { SupsModule } from '../sups/sups.module';
 
 

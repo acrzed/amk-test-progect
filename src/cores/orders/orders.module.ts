@@ -2,13 +2,6 @@ import { forwardRef, Module } from '@nestjs/common';
 import { AuthModule } from '../../auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { User, UserSchema } from '../users/user.model';
-import { UsersModule } from '../users/users.module';
-import { UsersService } from '../users/users.service';
-
-import { Client, ClientSchema } from '../clients/entities/client.entity';
-import { ClientsModule } from '../clients/clients.module';
-import { ClientsService } from '../clients/clients.service';
 
 import { Order, OrderSchema } from './entities/order.entity';
 import { OrdersService } from './orders.service';
@@ -24,14 +17,11 @@ import { SupsModule } from '../sups/sups.module';
   imports: [
     MongooseModule.forFeature([
       { name: Order.name, schema: OrderSchema },
-      { name: User.name, schema: UserSchema },
-      { name: Client.name, schema: ClientSchema },
       { name: Trash.name, schema: TrashSchema },
     ]),
-    // UsersModule,
     OrderTypesModule,
     OrderStatsModule,
-    forwardRef(() =>  UsersModule),
+    // SupsModule,
     forwardRef(() => AuthModule),
     forwardRef(() => SupsModule),
 

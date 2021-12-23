@@ -30,11 +30,11 @@ export class Dispatch {
 
   @ApiProperty({ example: '01.01.2021', description: 'дата и время обработки заказа' })
   @Prop({ type: Date, default: Date.now() })
-  enterDate: Date
+  processDate: Date
 
   @ApiProperty({ example: 'заказ', description: 'содержимое заказа' })
   @Prop({ required: true, type: String })
-  basket: string;
+  confirmOrder: string;
 
   @ApiProperty({ example: 'комментарий', description: 'комментарий, заметки, описание' })
   @Prop({ type: String })

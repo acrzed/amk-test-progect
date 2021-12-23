@@ -6,7 +6,6 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../../auth/roles.guard';
 import { Roles } from '../../../auth/role-auth.decorator';
-import { ClientChannel } from '../../clients/client-channels/entities/client-channel.entity';
 import { Pay } from './entities/pay.entity';
 import { RemoveTrashDto } from '../../../comCores/trashs/dto/remove-trash.dto';
 

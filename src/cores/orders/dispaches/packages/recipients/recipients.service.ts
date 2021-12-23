@@ -11,6 +11,7 @@ import { Trash, TrashDocument } from '../../../../../comCores/trashs/entities/tr
 import { Client, ClientDocument } from '../../../../clients/entities/client.entity';
 import { RemoveRecipientDto } from './dto/remove-recipient.dto';
 import { SupsService } from '../../../../sups/sups.service';
+import { RemoveTrashDto } from '../../../../../comCores/trashs/dto/remove-trash.dto';
 
 @Injectable()
 export class RecipientsService {
@@ -23,28 +24,26 @@ export class RecipientsService {
   ) {
   }
 
-    validObjectID(obj) {
-    if (!mongoose.isValidObjectId(obj)){
-      throw new HttpException({ message: `Ошибка - ID #${obj} не корректен!` }, HttpStatus.BAD_REQUEST);
-    }
-    return true }
-
   async create(dto: CreateRecipientDto): Promise<Recipient> {
     const { idClient, idCreator, lastName, name, middleName, phone } = dto
     // проверка наличия полей
     if ( !idCreator || !idClient || !lastName || !name || !middleName || !phone ){ throw new HttpException({ message: `Ошибка - одно или несколько полей не заполненно! Должны быть заполнены поля - idCreator, idClient, sender, lastName, name, middleName, phone` }, HttpStatus.BAD_REQUEST)}
-    // проверка длины телефона
-    if (phone.toString().length != 10){throw new HttpException({ message: `Поле ${phone} заполнено не верно, требуется номер телефона вида 098*******, 10 цифр` }, HttpStatus.BAD_REQUEST)}
     // проверка создающего пользователя
     await this.supsService.validateCreator(idCreator)
     // проверка клиента
-    await this.supsService.validateClient(idClient)
+    let client = await this.supsService.validateClient(idClient)
+    // приведение поля номера телефона к цифрам
+    let phoneNum = await this.supsService.stringToPhone(phone)
     // проверка кандидата
-    if(await this.supsService.validateRecipientByPhone(phone, lastName, name, middleName)) {
+    if(await this.supsService.validateCandidateByRecipientToken(phoneNum, lastName, name, middleName)) {
       // создание получателя
       try {
-      let recipient = await this.recipientDB.create(dto);
-        return await recipient.save();
+        let recipientToken = await this.supsService.createRecipientToken(phoneNum, lastName, name, middleName)
+      let recipient = await this.recipientDB.create({ ...dto, phone: phoneNum, recipientToken: recipientToken });
+        await recipient.save()
+        await client.recipients.push(recipient._id)
+        await client.save()
+        return recipient
       } catch (e) {
         console.log(e);
       }
@@ -58,23 +57,69 @@ export class RecipientsService {
     return await this.supsService.validateRecipient(id)
   }
 
-  async update(id: ObjectId, updateRecipientDto: UpdateRecipientDto) {
-    return `This action updates a #${id} recipient`;
+  async update(id: string, dto: UpdateRecipientDto) {
+    // данные ДТО
+    const { idClient, sender, lastName, name, middleName, phone, enterDate, ref, desc } = dto;
+    // получатель
+    let recipient = await this.supsService.validateRecipient(id)
+    // данные до модификации
+    let upIdClient = recipient.idClient, upSender = recipient.sender, upLastName = recipient.lastName,
+      upName = recipient.name, upMiddleName = recipient.middleName, upPhone = recipient.phone,
+      upEnterDate = recipient.enterDate, upRef = recipient.ref, upDesc = recipient.desc;
+    // модификация данных
+    if (idClient) { upIdClient = await this.supsService.validateClient(idClient) }
+    sender ? upSender = sender : () => {}
+    lastName ? upLastName = lastName : () => {}
+    name ? upName = name : () => {}
+    middleName ? upMiddleName = middleName : () => {}
+    if (phone) { upPhone = await this.supsService.stringToPhone(phone) }
+    if (enterDate) { upEnterDate = await this.supsService.stringToDate(enterDate) }
+    ref ? upRef = ref : () => {}
+    desc ? upDesc = desc : () => {}
+    // сохранение
+    return await recipient
+      .$set('idClient', upIdClient)
+      .$set('sender', upSender)
+      .$set('lastName', upLastName)
+      .$set('name', upName)
+      .$set('middleName', upMiddleName)
+      .$set('phone', upPhone)
+      .$set('enterDate', upEnterDate)
+      .$set('ref', upRef)
+      .$set('desc', upDesc)
+      .save()
   }
 
-  async remove(id: ObjectId, dto: RemoveRecipientDto) {
+  async remove(id: string, dto: RemoveTrashDto) {
     const { idCreator, desc } = dto;
     // проверка создающего пользователя
-    if (this.validObjectID(idCreator)){}
-    let creator
-    try { creator = await this.userDB.findById( idCreator ) } catch (e) { console.log(e) }
-    if ( !creator ){ throw new HttpException({ message: `Пользователь с ID #${idCreator} не найден` }, HttpStatus.NOT_FOUND)}
-    // проверка получателя
-    let recipient
-    try { recipient = await this.recipientDB.findById(id) } catch (e) { console.log(e) }
-    if ( !recipient ){throw new HttpException({ message: `Получатель с ID #${idCreator} не найден` }, HttpStatus.NOT_FOUND)}
+    let creator = await this.supsService.validateCreator(idCreator)
+     // проверка получателя
+    let recipient = await this.supsService.validateRecipient(id)
     // проверка комментария
-    if (!desc){throw new HttpException({ message: `требуется комментарий - причина удаления` }, HttpStatus.BAD_REQUEST)}
+    await this.supsService.validateDesc(desc)
+    // клиента
+    let client = await this.supsService.validateClient(recipient.idClient)
+    // удаление из списка получателей клиента
+    try {
+      if (client.recipients.indexOf(id) != -1) {
+        await client.recipients.splice(client.recipients.indexOf(id), 1)
+        await client.save() } } catch (e) { console.log(e) }
+
+    // найти все отправки с этим получателем и добавить в заметки к клиенту
+    // - такие то посылки были отправлены такому то получателю, получатель удалён
+
+    // try {
+    //   if (client.recipients.indexOf(id) != -1) {
+    //     await client.recipients.splice(client.recipients.indexOf(id), 1)
+    //     await client.save()
+    //   } } catch (e) { console.log(e) }
+
+      try {
+        const trashRecipient = await new this.trashDB({
+          idCreator: creator, removeDate: Date.now(), recipient: recipient, desc: desc
+        })
+        await trashRecipient.save() } catch (e) { console.log(e) }
 
 
   }
@@ -85,4 +130,5 @@ export class RecipientsService {
     if ( !recipient ){ throw new HttpException({ message: `Получатель с телефоном #${num} не найден` }, HttpStatus.NOT_FOUND)}
     return recipient
   }
+
 }

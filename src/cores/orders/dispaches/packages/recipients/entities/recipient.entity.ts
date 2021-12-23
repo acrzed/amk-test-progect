@@ -55,17 +55,21 @@ export class Recipient {
 
   @ApiProperty({ example: '093********', description: 'телефон получателя', type: Number })
   @IsNotEmpty({ message: 'Поле телефон получателя не может быть пустым!'})
-  @IsNumber({maxDecimalPlaces: 10}, {message: 'требуется номер телефона вида 098*******, 10 цифр'})
-  @Prop({ required: true, minlength: 10, maxlength: 10, type: Number })
+  @IsNumber({maxDecimalPlaces: 12}, {message: 'требуется номер телефона вида 098*******, 10 цифр'})
+  @Prop({ required: true, minlength: 12, maxlength: 12, type: Number })
   phone: number;
 
   @ApiProperty({ example: '01.01.2021', description: 'Дата создания' })
   @Prop({ type: Date, default: Date.now() })
   enterDate: Date
 
-  @ApiProperty({ example: 'df9bc892-cdb3-11eb-8513-b88303659df5', description: 'API NP REF получателя' })
-  @Prop({ type: String })
+  @ApiProperty({ example: 'df9bc892-cdb3-11eb-8513-b88303659df5', description: 'API NP REF получателя', uniqueItems: true })
+  @Prop({ type: String, unique: true })
   ref: string
+
+  @ApiProperty({ example: 'Фамилия Имя Отчество Телефон', description: 'поисковый токен получателя' })
+  @Prop({ type: String })
+  recipientToken: string
 
   @ApiProperty({ example: 'комментарий', description: 'комментарий, заметки, описание' })
   @Prop({ type: String })
