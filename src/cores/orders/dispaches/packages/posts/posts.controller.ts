@@ -12,7 +12,7 @@ import { Roles } from '../../../../../auth/role-auth.decorator';
 @UseGuards(JwtAuthGuard)
 @UseGuards(RolesGuard)
 @Roles('ADMIN', 'SELLER')
-@Controller('posts')
+@Controller('api/posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 

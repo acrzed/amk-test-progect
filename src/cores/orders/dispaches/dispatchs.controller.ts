@@ -3,7 +3,7 @@ import { DispatchsService } from './dispatchs.service';
 import { CreateDispatchDto } from './dto/create-dispatch.dto';
 import { UpdateDispatchDto } from './dto/update-dispatch.dto';
 
-@Controller('dispatchs')
+@Controller('api/dispatchs')
 export class DispatchsController {
   constructor(private readonly dispatchsService: DispatchsService) {}
 

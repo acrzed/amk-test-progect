@@ -16,7 +16,7 @@ import { RemoveTrashDto } from '../../../comCores/trashs/dto/remove-trash.dto';
 @UseGuards(JwtAuthGuard)
 @UseGuards(RolesGuard)
 @Roles('ADMIN', 'SELLER')
-@Controller('clients/channels')
+@Controller('api/clients/channels')
 export class ClientChannelsController {
   constructor(private readonly clientChannelsService: ClientChannelsService) {}
 

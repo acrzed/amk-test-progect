@@ -14,7 +14,7 @@ import { RemoveTrashDto } from '../../../comCores/trashs/dto/remove-trash.dto';
 @UseGuards(JwtAuthGuard)
 @UseGuards(RolesGuard)
 @Roles('ADMIN', 'SELLER')
-@Controller('pays')
+@Controller('api/pays')
 export class PaysController {
   constructor(private readonly paysService: PaysService) {}
 

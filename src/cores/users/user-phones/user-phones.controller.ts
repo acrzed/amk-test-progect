@@ -30,7 +30,7 @@ import { RemoveUserPhoneDto } from './dto/remove-user-phone.dto';
 @UseGuards(JwtAuthGuard)
 @UseGuards(RolesGuard)
 @Roles('ADMIN', 'SELLER')
-@Controller('user/phones')
+@Controller('api/user/phones')
 export class UserPhonesController {
   constructor(private readonly userPhonesService: UserPhonesService) {}
 
@@ -74,7 +74,7 @@ export class UserPhonesController {
     return this.userPhonesService.findOneUserPhone(number);
   }
 
-  @ApiOperation({ summary: 'Телефон пользователя по номеру', description:'Точка доступа для получения телефона пользователей по номеру, доступ только для админов' })
+  @ApiOperation({ summary: 'Телефон пользователя по номеру', description:'Точка доступа для получения телефона пользователя по номеру, доступ только для админов' })
   @ApiResponse({ status: 200, type: UserPhone })
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')

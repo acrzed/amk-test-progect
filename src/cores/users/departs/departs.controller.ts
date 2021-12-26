@@ -15,7 +15,7 @@ import { RemoveDepartDto } from './dto/remove-depart.dto';
 @Roles('ADMIN')
 @UseGuards(RolesGuard)
 @ApiTags('Подразделения / отделы')
-@Controller('dept')
+@Controller('api/dept')
 export class DepartsController {
   constructor(private readonly departsService: DepartsService) {}
 

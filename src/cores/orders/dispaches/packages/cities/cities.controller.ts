@@ -3,7 +3,7 @@ import { CitiesService } from './cities.service';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
 
-@Controller('cities')
+@Controller('api/cities')
 export class CitiesController {
   constructor(private readonly citiesService: CitiesService) {}
 

@@ -16,7 +16,7 @@ import { RemoveTrashDto } from '../../comCores/trashs/dto/remove-trash.dto';
 @Roles('ADMIN')
 @UseGuards(RolesGuard)
 @ApiTags('Пользователи системы CRM')
-@Controller('users')
+@Controller('api/users')
 export class UsersController {
 
   constructor(private userService: UsersService) {
@@ -45,7 +45,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Получить запись пользователя по ID', description:'Точка доступа для получения записи пользователя по ID , доступ ограничен, только для пользователей с ролью - ADMIN' })
   @ApiResponse({ status: 200, type: User })
-  @Get('id/:id')
+  @Get(':id')
   getByID(@Param('id') id: User): Promise<User> {
       return this.userService.getUserByID(id);
   }

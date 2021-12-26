@@ -14,7 +14,7 @@ import { PostService } from './entities/postService.entity';
 @UseGuards(JwtAuthGuard)
 @UseGuards(RolesGuard)
 @Roles('ADMIN')
-@Controller('postServices')
+@Controller('api/postServices')
 export class postServicesController {
   constructor(private readonly postServices: postService) {}
 

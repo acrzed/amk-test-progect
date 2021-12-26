@@ -3,7 +3,7 @@ import { PackagesService } from './packages.service';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
 
-@Controller('packages')
+@Controller('api/packages')
 export class PackagesController {
   constructor(private readonly packagesService: PackagesService) {}
 

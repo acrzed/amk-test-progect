@@ -20,8 +20,6 @@ import { RecipientsService } from './recipients.service';
 import { CreateRecipientDto } from './dto/create-recipient.dto';
 import { UpdateRecipientDto } from './dto/update-recipient.dto';
 import { Recipient } from './entities/recipient.entity';
-import { ObjectId } from 'mongoose';
-import { RemoveRecipientDto } from './dto/remove-recipient.dto';
 import { RemoveTrashDto } from '../../../../../comCores/trashs/dto/remove-trash.dto';
 
 @ApiTags('Получатели отправлений')
@@ -29,7 +27,7 @@ import { RemoveTrashDto } from '../../../../../comCores/trashs/dto/remove-trash.
 @UseGuards(JwtAuthGuard)
 @Roles('ADMIN', 'SELLER')
 @UseGuards(RolesGuard)
-@Controller('recipients')
+@Controller('api/recipients')
 export class RecipientsController {
   constructor(private readonly recipientsService: RecipientsService) {}
 

@@ -27,7 +27,7 @@ import { UserChannel } from './entities/user-channel.entity';
 @UseGuards(JwtAuthGuard)
 @UseGuards(RolesGuard)
 @Roles('ADMIN', 'SELLER')
-@Controller('user/channels')
+@Controller('api/user/channels')
 export class UserChannelsController {
   constructor(private readonly userChannelsService: UserChannelsService) {}
 

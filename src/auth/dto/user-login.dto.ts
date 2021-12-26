@@ -1,14 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, Length } from 'class-validator';
+import { Prop } from '@nestjs/mongoose';
 
 
 export class UserLoginDto {
 
   // имя
-  @ApiProperty({example:'Ivan', description:'имя пользователя', required: true})
-  @IsNotEmpty({ message: 'имя пользователя не может быть пустым!'})
-  @IsString({message:'Имя должно быть строкой'} )
-  readonly name: string;
+  @ApiProperty({example: 'Номер телефона пользователя', description: 'Номер телефона пользователя'})
+  @IsNotEmpty({ message: 'Номер телефона пользователя не может быть пустым!'})
+  @IsString({message:'Номер телефона должен быть строкой'} )
+  @Prop({required:true, type: String})
+  readonly phone: string;
 
   // пароль
   @ApiProperty({example:'********', description:'пароль не менее 8 символов', required: true})

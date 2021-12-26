@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Length } from 'class-validator';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { User } from '../../user.model';

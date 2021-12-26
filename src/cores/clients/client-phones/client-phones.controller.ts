@@ -29,7 +29,7 @@ import { RemoveTrashDto } from '../../../comCores/trashs/dto/remove-trash.dto';
 @UseGuards(JwtAuthGuard)
 @UseGuards(RolesGuard)
 @Roles('ADMIN', 'SELLER')
-@Controller('clients/phones')
+@Controller('api/clients/phones')
 export class ClientPhonesController {
   constructor(private readonly clientPhonesService: ClientPhonesService) {}
 

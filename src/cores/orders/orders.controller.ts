@@ -15,7 +15,7 @@ import { RemoveTrashDto } from '../../comCores/trashs/dto/remove-trash.dto';
 @Roles('ADMIN', 'SELLER')
 @UseGuards(RolesGuard)
 @ApiTags('Управление заказами клиентов')
-@Controller('/orders')
+@Controller('api/orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 

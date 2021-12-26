@@ -6,7 +6,7 @@ import { User } from '../cores/users/user.model';
 import { UserLoginDto } from './dto/user-login.dto';
 
 @ApiTags('Авторизация')
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
 
   constructor(private authService: AuthService) {

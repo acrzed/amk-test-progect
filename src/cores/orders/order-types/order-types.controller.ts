@@ -13,7 +13,7 @@ import { RemoveTrashDto } from '../../../comCores/trashs/dto/remove-trash.dto';
 @UseGuards(JwtAuthGuard)
 @UseGuards(RolesGuard)
 @Roles('ADMIN', 'SELLER')
-@Controller('order-types')
+@Controller('api/order-types')
 export class OrderTypesController {
   constructor(private readonly orderTypesService: OrderTypesService) {}
 
