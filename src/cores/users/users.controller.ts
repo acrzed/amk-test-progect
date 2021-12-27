@@ -10,6 +10,7 @@ import { RolesGuard } from '../../auth/roles.guard';
 import { RoleAddDto } from './dto/role-add.dto';
 import { DepartUpdateDto } from './dto/depart-update.dto';
 import { RemoveTrashDto } from '../../comCores/trashs/dto/remove-trash.dto';
+import { UserPhone } from './user-phones/entities/user-phone.entity';
 
 @UsePipes(ValidationPipe)
 @UseGuards(JwtAuthGuard)
@@ -48,6 +49,12 @@ export class UsersController {
   @Get(':id')
   getByID(@Param('id') id: User): Promise<User> {
       return this.userService.getUserByID(id);
+  }
+  @ApiOperation({ summary: 'Получить запись пользователя по ID', description:'Точка доступа для получения записи пользователя по ID , доступ ограничен, только для пользователей с ролью - ADMIN' })
+  @ApiResponse({ status: 200, type: User })
+  @Get('/ph/:phone')
+  getByPhone(@Param('phone') phone: string): Promise<User> {
+      return this.userService.getUserByPhone(phone,0);
   }
 
   @ApiOperation({ summary: 'Удаление пользователя' ,description:'Точка доступа для удаления пользователя, доступ для админов' })

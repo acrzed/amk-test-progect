@@ -45,34 +45,20 @@ export class UsersService {
   }
 
   async createUser(dto: UserCreateDto): Promise<User> {
-    const { name, phone, channel, nick } = dto;
+    const { phone, password } = dto;
     let depart;
-    try {
-      depart = await this.departService.findByName('Guest');
-    } catch (e) {
-      console.log(e);
-    }
-    let roles = ['GUEST'];
-    let candidate;
-    try {
-      candidate = await this.userDB.findOne({ name: name });
-    } catch (e) {
-      console.log(e);
-    }
-    if (candidate) {
-      throw new HttpException({ message: `Ошибка - пользователь - ${candidate.name} уже существует!` }, HttpStatus.CONFLICT);
-    }
+    try { depart = await this.departService.findByName('Guests') } catch (e) { console.log(e) }
+    let ph;
+    try { ph = await this.userPhonesDB.findOne({ phone: phone }) } catch (e) { console.log(e) }
+    if (ph) { throw new HttpException({ message: `Ошибка - телефон - ${phone} уже используется!` }, HttpStatus.CONFLICT) }
     let user;
     try {
-      user = await new this.userDB({ name: name, depart: depart._id, roles: roles });
+      user = await new this.userDB({ depart: depart._id, roles: ['GUEST'], password: password });
+      user.$set('phones', [])
       await user.save();
+      // console.log("createUser - телефона нет - ", user)
       await this.phoneService.addUserPhone({ idUser: user._id, phone: phone, desc: 'добавлен при регистрации' });
-      await this.channelService.addUserChannel({
-        idUser: user._id,
-        channel: channel,
-        nick: nick,
-        desc: 'добавлен при регистрации',
-      });
+      // console.log("createUser - телефон добавлен - ", user)
       return await this.getUserByID(user._id);
     } catch (e) {
       console.log(e);
@@ -95,21 +81,36 @@ export class UsersService {
     return user;
   }
 
-  async getUserByPhone(phone: string): Promise<User> {
+  async getUserByPhone(phone: string, key = 0): Promise<User> {
     let ph, user;
     try {
       ph = await this.userPhonesDB.findOne({ phone: phone });
-      user = await this.userDB.findById(ph.idUser)
-        .populate('depart')
-        .populate('phones')
-        .populate('channels');
+      // console.log("getUserByPhone - ",phone," - ", ph)
     } catch (e) {
       console.log(e);
     }
-    if (!ph) {
-      throw new HttpException({ message: `Пользователь с телефоном ${phone} не найден!` }, HttpStatus.NOT_FOUND);
+    if (key === 0) {
+      if (!ph) {
+        console.log(`getUserByPhone - Ошибка - телефон - ${phone} не найден!`)
+        throw new HttpException({ message: `Ошибка - телефон - ${phone} не найден!` }, HttpStatus.NOT_FOUND);
+      }
+      try {
+        user = await this.userDB.findById(ph.idUser)
+          .populate('depart')
+          .populate('phones')
+          .populate('channels');
+
+      } catch (e) {
+        console.log(e);
+      }
+      if (!user) {
+        let admin = await this.userDB.findById("616ed3983ebfd820c86061d0")
+        await this.phoneService.adminRemoveUserPhone(ph,{idCreator: admin, desc: 'пользователь удалён'})
+        throw new HttpException({ message: `Пользователь с ID #${ph.idUser} не найден - телефон будет удалён` }, HttpStatus.NOT_FOUND);
+      }
+      return user
     }
-    return user;
+
   }
 
   async getUserByID(id: User): Promise<User> {

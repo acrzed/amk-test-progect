@@ -1,14 +1,25 @@
 import { Component } from '@angular/core';
 
+
+
 @Component({
   selector: 'app-name-editor',
   templateUrl:'./name-editor.component.html',
-  styleUrls: ['./name-editor.component.css']
+  styles: [`
+        input.ng-touched.ng-invalid {border:solid red 2px;}
+        input.ng-touched.ng-valid {border:solid green 2px;}
+    `]
+  // styleUrls: ['./name-editor.component.css']
 })
 export class NameEditorComponent {
 
-  powers = ['Really Smart', 'Super Flexible', 'Weather Changer'];
+  userPhone = ''
+  userEmail = ''
+  userName = ''
 
-  hero = {name: 'Dr.', alterEgo: 'Dr. What', power: this.powers[0]};
+
+  addUser(){
+    console.log(this.userPhone, this.userName,this.userEmail);
+  }
 
 }

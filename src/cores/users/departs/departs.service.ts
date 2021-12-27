@@ -28,7 +28,7 @@ export class DepartsService {
     if (candidate) { throw new HttpException({ message: `Ошибка - отдел - ${candidate} уже существует!` }, HttpStatus.CONFLICT);}
     try {
       const dept = new this.departmentDB(createDepartDto);
-      console.log('создан отдел - ',dept)
+      console.log('createDepart - создан отдел - ',dept)
       await dept.save()
       return dept;
     }catch (e) {

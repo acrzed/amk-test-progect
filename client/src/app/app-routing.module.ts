@@ -5,19 +5,21 @@ import { AuthLayoutComponent } from './shared/layouts/auth-layout/auth-layout.co
 import { SiteLayoutComponent } from './shared/layouts/site-layout/site-layout.component';
 import { RegisterPageComponent } from './register-page/register-page.component';
 import { NameEditorComponent } from './name-editor/name-editor.component';
+import { TestComponent } from './test/test.component';
+import { AuthGuard } from './shared/classes/auth.guard';
 
 const routes: Routes = [
   {
     path: '', component: AuthLayoutComponent, children: [
       {path: '', redirectTo: '/login', pathMatch: 'full'},
       {path: 'login', component: LoginPageComponent},
-      {path: 'register', component: RegisterPageComponent},
-      {path: 'test', component: NameEditorComponent}
-
+      {path: 'register', component: RegisterPageComponent}
     ]
   },
   {
-    path: '', component: SiteLayoutComponent, children: [
+    path: '', component: SiteLayoutComponent, canActivate: [AuthGuard], children: [
+      {path: 'test', component: TestComponent},
+      {path: 'name', component: NameEditorComponent},
     ]
   }
 ];

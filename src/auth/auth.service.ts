@@ -23,13 +23,15 @@ export class AuthService {
   async registration(userDto: UserCreateDto) {
     const hashPassword = await bcrypt.hash(userDto.password, 5);
     const user = await this.userService.createUser({ ...userDto, password: hashPassword });
-    console.log('Добавлен новый пользователь - ', user);
-    return this.generateToken(user);
-
+    if (user){
+      console.log('AuthService - Добавлен новый пользователь - ', user);
+      return this.generateToken(user);
+    }
   }
 
   private async generateToken(user: User) {
-    const payload = { name: user.name, id: user._id, role: user.roles };
+    // console.log('generateToken - ', user)
+    const payload = { id: user._id, role: user.roles, dept: user.depart };
     return {
       token: this.jwtService.sign(payload),
     };
@@ -42,7 +44,7 @@ export class AuthService {
       return user;
     }
     throw new UnauthorizedException({
-      message: 'Некорректное имя или пароль',
+      message: 'Неверный пароль',
     });
   }
 }

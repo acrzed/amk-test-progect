@@ -16,11 +16,11 @@ export class User {
   _id: mongoose.Schema.Types.ObjectId;
 
   @ApiProperty({ example: 'Ivan', description: 'имя пользователя' })
-  @Prop({ required: true, unique: true, type: String })
+  @Prop({ type: String })
   name: string;
 
   @ApiProperty({ example: '61688b4999c6f111736775f6', description: 'ID номера телефона пользователя' })
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserPhone' }], default: '61688b4999c6f111736775f6' })
+  @Prop({ required: true, unique: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserPhone' }], default: '61688b4999c6f111736775f6' })
   phones: ObjectId[];
 
   @ApiProperty({ example: '61688b4999c6f111736775f6', description: 'ID канала пользователя' })

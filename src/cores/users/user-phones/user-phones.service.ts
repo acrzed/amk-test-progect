@@ -39,6 +39,7 @@ export class UserPhonesService {
       throw new HttpException({
         message: `Ошибка - пользователь с ID #${idUser} не найден!` }, HttpStatus.NOT_FOUND); }
     let newUserPhone
+        // console.log('addUserPhone - Создание телефона - фаза до', user)
     try {
       // Создание телефона
       newUserPhone = await new this.userPhoneDB({idUser: idUser, phone: phone, desc: desc})
@@ -46,6 +47,7 @@ export class UserPhonesService {
       // Внесение ID телефона в массив телефонов пользователя
         user.phones.push(newUserPhone._id)
         user.save()
+        // console.log('addUserPhone - Создание телефона', newUserPhone, `\n`,user)
       })
     }catch (e) {
       console.log(e)
@@ -127,7 +129,30 @@ export class UserPhonesService {
       const del = await this.userPhoneDB.findByIdAndDelete(id)
       const trash = await new this.trashDB({
         idCreator: idCreator, idUserPhone: id, phone: numPhone, desc: desc })
-      console.log(`Пользователем ${creator.name} удалён телефон ${numPhone} с ID #${del.id}`)
+      console.log(`removeUserPhone - Пользователем ${creator.name} удалён телефон ${numPhone} с ID #${del.id}`)
+      await trash.save()
+      return del;
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  async adminRemoveUserPhone(id: ObjectId, dto: RemoveUserPhoneDto):Promise<UserPhone> {
+    const { idCreator, desc } = dto;
+    let numPhone, userID;
+    if ( !mongoose.isValidObjectId(idCreator) ){ throw new HttpException({ message: `ID удаляющего пользователя #${idCreator} не корректен!` }, HttpStatus.BAD_REQUEST)}
+    let creator
+    try { creator = await this.userDB.findById( idCreator ) } catch (e) { console.log(e) }
+    if ( !creator ){ throw new HttpException({ message: `Удаляющий пользователь с ID #${idCreator} не найден` }, HttpStatus.NOT_FOUND)}
+    if ( !mongoose.isValidObjectId(id) ){  throw new HttpException({ message: `ID удаляемого телефона #${id} не корректен!` }, HttpStatus.BAD_REQUEST)}
+    let delPhone
+    try { delPhone = await this.userPhoneDB.findById(id) } catch (e) { console.log(e) }
+    if ( !delPhone ){ throw new HttpException({ message: `Удаляемый телефон с ID #${id} не найден` }, HttpStatus.NOT_FOUND)}
+    numPhone = delPhone.phone;
+    try {
+      const del = await this.userPhoneDB.findByIdAndDelete(id)
+      const trash = await new this.trashDB({
+        idCreator: idCreator, idUserPhone: id, phone: numPhone, desc: desc })
+      console.log(`adminRemoveUserPhone - Пользователем ${creator.name} удалён телефон ${numPhone} с ID #${del.id}`)
       await trash.save()
       return del;
     } catch (e) {

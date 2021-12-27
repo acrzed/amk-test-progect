@@ -15,7 +15,7 @@ async function start() {
   SwaggerModule.setup('/api/doc', app, sysDoc)
   // app.useGlobalPipes(new ValidationPipe())
   await app.listen(PORT,
-    () => console.log('Сервер запущен на порту - ', PORT))
+    () => console.log('App - Сервер запущен на порту - ', PORT))
 
 }
 

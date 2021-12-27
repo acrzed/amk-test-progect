@@ -124,7 +124,7 @@ export class ClientChannelsService {
           channel: delChannel.channel, nick: delChannel.nick, desc: desc })
         trash.save()
       })
-      console.log(`Пользователем ${creator.name} c ID #${idCreator} удалён канал ${delChannel.channel} с ID #${id}`)
+      console.log(`removeChannel - Пользователем ${creator.name} c ID #${idCreator} удалён канал ${delChannel.channel} с ID #${id}`)
       return this.clientChannelDB.findByIdAndDelete(id);
     }catch (e) {
       console.log(e)
