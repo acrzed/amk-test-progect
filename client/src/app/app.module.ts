@@ -5,23 +5,34 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { TokenInterceptor } from './shared/classes/token.interceptor';
+
 import { AuthLayoutComponent } from './shared/layouts/auth-layout/auth-layout.component';
-import { SiteLayoutComponent } from './shared/layouts/site-layout/site-layout.component';
-import { LoginPageComponent } from './login-page/login-page.component';
 import { RegisterPageComponent } from './register-page/register-page.component';
+import { LoginPageComponent } from './login-page/login-page.component';
+import { SiteLayoutComponent } from './shared/layouts/site-layout/site-layout.component';
+import { LoaderComponent } from './shared/components/loader/loader.component';
+import { UsersPageComponent } from './users-page/users-page.component';
+import { UserFormComponent } from './users-page/user-form/user-form.component';
+import { DepartsPageComponent } from './departs-page/departs-page.component';
+import { DepartFormComponent } from './departs-page/depart-form/depart-form.component';
 import { NameEditorComponent } from './name-editor/name-editor.component';
 import { TestComponent } from './test/test.component';
-import { TokenInterceptor } from './shared/classes/token.interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginPageComponent,
+    LoaderComponent,
     AuthLayoutComponent,
-    SiteLayoutComponent,
     RegisterPageComponent,
+    LoginPageComponent,
+    SiteLayoutComponent,
+    DepartsPageComponent,
+    DepartFormComponent,
+    UsersPageComponent,
+    UserFormComponent,
     NameEditorComponent,
-    TestComponent
+    TestComponent,
   ],
   imports: [
     BrowserModule,

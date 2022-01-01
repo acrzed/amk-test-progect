@@ -3,7 +3,9 @@ import { ElementRef } from '@angular/core';
 declare var M: {
   Modal: any;
   FloatingActionButton: any;
-  toast: (arg0: { html: string }) => void
+  toast: (
+    arg0: { html: string }
+  ) => void
   updateTextFields(): void;
 }
 
@@ -15,7 +17,8 @@ export interface MaterialInstance {
 
 export class MaterialService {
   static toast(message: string) {
-    M.toast({html: message})
+    M.toast(
+      {html: message})
   }
 
   static initializeFloatingButton(ref: ElementRef) {

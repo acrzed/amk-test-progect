@@ -1,0 +1,98 @@
+<div class="page-title">
+  <h4>
+    <a routerLink="/departs">Отделы</a>
+    <i class="material-icons">keyboard_arrow_right</i>
+    {{isNew ? 'Добавить' : 'Редактировать'}} отдел
+  </h4>
+  <span>
+    <button
+      *ngIf="!isNew"
+      class="btn btn-small red"
+      (click)="deleteCategory()"
+    >
+      <i class="material-icons">delete</i>
+    </button>
+  </span>
+</div>
+
+<div class="row">
+  <form class="col s12 l6" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="input-field">
+      <input
+        formControlName="name"
+        id="name"
+        type="text"
+        [ngClass]="{'invalid': nm.invalid && nm.touched, 'errors': nm.getError('required')}"
+      >
+      <label for="name">Название</label>
+      <span
+        class="helper-text red-text"
+        *ngIf="nm.invalid && nm.touched"
+      >
+        <span *ngIf="nm.getError('minlength')">
+          Слишком короткое имя отдела!
+        </span>
+        <span *ngIf="nm.getError('required')">
+          Имя отдела не может быть пустым!
+        </span>
+      </span>
+    </div>
+    <div class="input-field"
+         *ngIf="!nm.invalid"
+    >
+      <input
+        formControlName="desc"
+        id="desc"
+        type="text"
+        [ngClass]="{'invalid': ds.invalid && ds.touched,'disabled': nm.invalid && nm.touched, 'errors': ds.getError('minlength')}"
+      >
+      <label for="name">Описание</label>
+      <span
+        class="helper-text red-text"
+        *ngIf="ds.invalid && ds.touched"
+      >
+        <span *ngIf="ds.getError('minlength')">
+          Слишком короткое описание отдела!
+        </span>
+      </span>
+    </div>
+
+    <div>
+      <input
+        type="file"
+        class="dn"
+        (change)="onFileUpload($event)"
+        #input
+      >
+      <button
+        (click)="triggerClick()"
+        [disabled]="form.disabled"
+        type="button"
+        class="waves-effect waves-light btn orange lighten-2 mb2"
+      >
+        <i class="material-icons left">backup</i>
+        Загрузить изображение
+      </button>
+    </div>
+
+    <div>
+      <button
+        type="submit"
+        [disabled]="form.invalid || form.disabled"
+        class="waves-effect waves-light btn"
+      >
+        Сохранить изменения
+      </button>
+    </div>
+  </form>
+
+  <div class="col s12 l4 center">
+    <img
+      class="responsive-img h200"
+      [src]="imagePreview"
+      *ngIf="imagePreview"
+    >
+  </div>
+</div>
+
+<!--<app-user-form></app-user-form>-->

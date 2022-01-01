@@ -7,6 +7,7 @@ import { Depart, DepartSchema } from './depart.model';
 import { RolesModule } from '../../../comCores/roles/roles.module';
 import { User, UserSchema } from '../user.model';
 import { Trash, TrashSchema } from '../../../comCores/trashs/entities/trash.entity';
+import { FileService } from '../../../file/file.service';
 
 
 @Module({
@@ -19,7 +20,7 @@ import { Trash, TrashSchema } from '../../../comCores/trashs/entities/trash.enti
     forwardRef(() => AuthModule)
   ],
   controllers: [DepartsController],
-  providers: [DepartsService],
+  providers: [DepartsService, FileService],
   exports: [DepartsService]
 })
 export class DepartsModule {}

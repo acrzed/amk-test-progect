@@ -9,20 +9,22 @@ export class JwtAuthGuard implements CanActivate {
   }
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-    const req = context.switchToHttp().getRequest()
+    const req = context.switchToHttp().getRequest();
+    const token = req.headers.authorization;
+    // const bearer = authHeader.split(' ')[0]
+    // const token = authHeader.split(' ')[1]
+    if (!token) {
+      console.log(token);
+      throw new UnauthorizedException({ message: 'jwt-auth - Пользователь не авторизован' });
+    }
     try {
-      const authHeader = req.headers.authorization
-      const bearer = authHeader.split(' ')[0]
-      const token = authHeader.split(' ')[1]
-      if(bearer !== 'Bearer' || !token){
-        throw new UnauthorizedException({message:'Пользователь не авторизован'})
-      }
-        const user = this.jwtService.verify(token)
-        req.user = user
-        return true
+      const user = this.jwtService.verify(token);
+      req.user = user;
+      return true;
     } catch (e) {
-      throw new UnauthorizedException({message:'Пользователь не авторизован'})
+      throw new UnauthorizedException({ message: 'Пользователь не авторизован' });
     }
 
-    // throw new Error('Method not implemented.');
-    }}
+
+  }
+}

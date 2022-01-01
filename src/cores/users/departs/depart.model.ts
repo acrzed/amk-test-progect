@@ -12,13 +12,20 @@ export class Depart {
   @ApiProperty({ example: 'ID', description: 'ID подразделения - автоматически' })
   _id: mongoose.Schema.Types.ObjectId;
 
-  @ApiProperty({example: 'Sellers', description: 'Название отдела - продажи, производство, технический, административный и т.д.'})
-  @Prop({ required:true, unique: true, type: String})
-  name: string
+  @ApiProperty({
+    example: 'Sellers',
+    description: 'Название отдела - продажи, производство, технический, административный и т.д.',
+  })
+  @Prop({ required: true, unique: true, type: String })
+  name: string;
 
-  @ApiProperty({example:'Отдел продаж', description:'описание отдела - допуск, ограничение, etc.'})
+  @ApiProperty({ example: 'Отдел продаж', description: 'описание отдела - допуск, ограничение, etc.' })
   @Prop({ type: String })
   desc: string;
+
+  @ApiProperty({ example: 'Depart.jpg', description: 'картинка отдела' })
+  @Prop({ type: String, default: '' })
+  img: string;
 }
 
-export  const DepartSchema = SchemaFactory.createForClass(Depart);
+export const DepartSchema = SchemaFactory.createForClass(Depart);

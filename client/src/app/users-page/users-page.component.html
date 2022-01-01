@@ -1,0 +1,33 @@
+
+<div class="page-title">
+  <h3 style="color: #00539F">Сотрудники</h3>
+  <button type="button" class="btn btn-default" routerLink="/users/new">
+    Добавить сотрудника
+  </button>
+</div>
+<div
+  class="row"
+  *ngIf="users$ | async as users; else loader">
+  <div class="col s12">
+    <div class="collection" *ngIf="users.length !== 0; else empty">
+      <a
+        *ngFor="let user of users"
+        [routerLink]="['/users', user._id]"
+        class="collection-item"
+        style="background: #F3F0DD"
+      >
+        <p class="black-text">
+          {{ user.name }}   -  отдел: {{user.depart.name}}
+        </p>
+      </a>
+    </div>
+    <ng-template #empty>
+      <div class="center">
+        Нет ни одного сотрудника
+      </div>
+    </ng-template>
+  </div>
+</div>
+<ng-template #loader>
+  <app-loader></app-loader>
+</ng-template>

@@ -11,7 +11,7 @@ export class RemoveDepartDto {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   readonly idCreator: User;
 
-  @ApiProperty({example:'Sellers', description:'название отдела'})
+  @ApiProperty({example:'Sellers', description:'название отдела куда будут перенесены сотрудники удаляемого отдела'})
   @Prop({ required: true, type:String})
   @IsString({message:'название отдела должно быть строкой'} )
   readonly name: string;

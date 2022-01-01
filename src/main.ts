@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+const morgan = require('morgan');
+
 async function start() {
   const PORT = process.env.PORT || 3000;
   const app = await NestFactory.create(AppModule);
@@ -14,6 +16,7 @@ async function start() {
   const sysDoc = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('/api/doc', app, sysDoc)
   // app.useGlobalPipes(new ValidationPipe())
+  app.use(morgan('combined'))
   await app.listen(PORT,
     () => console.log('App - Сервер запущен на порту - ', PORT))
 
