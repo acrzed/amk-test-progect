@@ -11,16 +11,17 @@ import { FileService } from '../../../file/file.service';
 
 
 @Module({
-  imports:[MongooseModule.forFeature([
+  imports: [MongooseModule.forFeature([
     { name: Depart.name, schema: DepartSchema },
     { name: User.name, schema: UserSchema },
     { name: Trash.name, schema: TrashSchema },
   ]),
     RolesModule,
-    forwardRef(() => AuthModule)
+    forwardRef(() => AuthModule),
   ],
   controllers: [DepartsController],
   providers: [DepartsService, FileService],
-  exports: [DepartsService]
+  exports: [DepartsService],
 })
-export class DepartsModule {}
+export class DepartsModule {
+}
