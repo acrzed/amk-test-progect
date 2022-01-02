@@ -17,7 +17,7 @@ export class DepartFormComponent implements OnInit {
 
   @ViewChild('input') inputRef!: ElementRef
   form: FormGroup = new FormGroup({});
-  image?: File | string
+  image?: File
   imagePreview: string | ArrayBuffer | null = ''
   isNew = true
   depart!: Depart
@@ -64,13 +64,14 @@ export class DepartFormComponent implements OnInit {
             name: depart.name,
             desc: depart.desc
           })
+          console.warn(depart.img)
           this.imagePreview = depart.img
           MaterialService.updateTextInputs()
         }
-
         this.form.enable()
       },
-      error => MaterialService.toast(error.error.message)
+      error => MaterialService.toast(error.error.message),
+      () => console.info('complete')
     )
   }
 
@@ -111,8 +112,8 @@ export class DepartFormComponent implements OnInit {
 
     obs$.subscribe(
       depart => {
-        this.depart = depart,
-        MaterialService.toast('Изменения сохранены.'),
+        this.depart = depart
+        MaterialService.toast(`Изменения сохранены.`)
         this.form.enable()
       },
         (error: { error: { message: string; }; }) => {

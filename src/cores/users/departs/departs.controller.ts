@@ -42,7 +42,7 @@ export class DepartsController {
   @UseInterceptors(FileInterceptor('image'))
   @Post()
   create(@Body() createDepartDto: CreateDepartDto, @UploadedFile() image: Express.Multer.File): Promise<Depart> {
-    console.log(createDepartDto, image);
+    // console.log('server-depart.control.create: - ',createDepartDto,'\n', image);
     return this.departsService.create(createDepartDto, image);
   }
 
@@ -81,9 +81,12 @@ export class DepartsController {
     summary: 'Создание подразделения',
   })
   @ApiResponse({ status: 200, type: Depart })
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('image'))
   @Patch(':id')
-  update(@Param('id') id: ObjectId, @Body() updateDepartDto: UpdateDepartDto, @UploadedFile() file: Express.Multer.File): Promise<Depart> {
+  update(@Param('id') id: ObjectId,
+         @Body() updateDepartDto: UpdateDepartDto,
+         @UploadedFile() file: Express.Multer.File): Promise<Depart> {
+    // console.log('server-depart.control.upd: - ',id, '\n', updateDepartDto,'\n', file);
     return this.departsService.update(id, updateDepartDto, file);
   }
 

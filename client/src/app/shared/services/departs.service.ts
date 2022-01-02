@@ -23,25 +23,26 @@ export class DepartsService {
     );
   }
 
-  create(name: string, desc?: string, img?: File | string | undefined) {
-    const fd = new FormData();
-
-    // if(img){
-    //   fd.append('img', img, img?.name)
-    // }
-
-    return this.http.post<Depart>('api/departs', fd);
-  }
-
-  update(id: string, name: string, desc: string, img: File | string | undefined = '') {
-    console.warn(id, name, desc, img);
+  create(name: string, desc?: string, img?: File) {
     const fd = new FormData();
     fd.append('name', `${name}`);
     fd.append('desc', `${desc}`);
     if (img) {
-      fd.append('image', img);
+      fd.append('image', img, img.name);
     }
-    fd.forEach(e => console.warn(e));
+
+    return this.http.post<Depart>('api/departs', fd);
+  }
+
+  update(id: string, name: string, desc: string, img?: File) {
+    // console.warn(id,'\n', name,'\n', desc,'\n', img);
+    const fd = new FormData();
+    fd.append('name', `${name}`);
+    fd.append('desc', `${desc}`);
+    if (img) {
+      fd.append('image', img, img.name);
+    }
+    // fd.forEach(e => console.warn(e,'\n'));
     return this.http.patch<Depart>(`api/departs/${id}`, fd);
   }
 

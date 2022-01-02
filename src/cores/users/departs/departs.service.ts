@@ -72,8 +72,8 @@ export class DepartsService {
     return dept;
   }
 
-  async update(id: ObjectId, updateDepartDto: UpdateDepartDto, img): Promise<Depart> {
-    console.log('server.dept.serv: - ', id, '\n', updateDepartDto, '\n', img);
+  async update(id: ObjectId, updateDepartDto: UpdateDepartDto, file): Promise<Depart> {
+    // console.log('server.dept.serv.upd: - ', id, '\n', updateDepartDto, '\n', file);
     const { name, desc } = updateDepartDto;
     if (!mongoose.isValidObjectId(id)) {
       throw new HttpException({ message: `Ошибка - ID #${id} не корректен!` }, HttpStatus.BAD_REQUEST);
@@ -90,12 +90,11 @@ export class DepartsService {
     if (name || desc) {
       if (name && String(name).length > 2) {
         updDept.$set({ name: name });
-      }
-      if (desc) {
         updDept.$set({ desc: desc });
       }
-      if (img) {
-        const imagePath = this.fileService.createFile(FileType.IMAGE, img);
+      if (file) {
+        const imagePath = this.fileService.createFile(FileType.IMAGE, file);
+        console.log('server.dept.serv.upd.imagePath: - ', imagePath);
         updDept.$set({ img: imagePath });
       }
       try {
