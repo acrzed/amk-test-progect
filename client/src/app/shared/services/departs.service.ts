@@ -10,7 +10,7 @@ export class DepartsService {
   constructor(private http: HttpClient) {
   }
 
-  fetch(): Observable<Depart[]> {
+  allDept(): Observable<Depart[]> {
     return this.http.get<Depart[]>('api/departs');
   }
 
@@ -18,9 +18,32 @@ export class DepartsService {
     return this.http.get<Depart>(`api/departs/${id}`);
   }
 
-  delete(id: string) {
-    return this.http.delete(`api/departs/${id}`,
-    );
+  // delete(id: string, desc: string) {
+  //   const fd = new FormData();
+  //   fd.append('desc', `${desc}`);
+  //
+  //   return this.http.delete(`api/departs/${id}`);
+  // }
+
+  delete(id: string, desc: string) {
+    console.warn(id, desc)
+    // let myHeaders = new Headers();
+    // myHeaders.append("desc", `${desc}`);
+    // let formdata = new FormData();
+    // formdata.append("desc", `${desc}`);
+    //
+    // let requestOptions = {
+    //   body: formdata
+    // };
+
+    // return fetch(`api/departs/${id}`, requestOptions)
+    //   .then(response => response.text())
+    //   .then(result => console.log(result))
+    //   .catch(error => console.log('error', error));
+    return this.http.delete(`api/departs/${id}`, {body:{
+        desc: desc,
+        token: localStorage.getItem('auth-token')
+      }});
   }
 
   create(name: string, desc?: string, img?: File) {

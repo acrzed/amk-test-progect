@@ -8,7 +8,7 @@
     <button
       *ngIf="!isNew"
       class="btn btn-small red"
-      (click)="deleteCategory()"
+      (click)="confirmDel()"
     >
       <i class="material-icons">delete</i>
     </button>
@@ -84,6 +84,45 @@
         {{isNew ? 'Добавить отдел' : 'Сохранить изменения'}}
 
       </button>
+    </div>
+    <div class="modal" #modal>
+      <div class="modal-content">
+        <h4 class="mb1">Укажите причину удаления</h4>
+        <div class="input-field">
+          <input
+            formControlName="delDesc"
+            id="pos-name"
+            type="text"
+            [ngClass]="{'invalid': form.get('delDesc')?.invalid && form.get('delDesc')?.touched}"
+          >
+          <label for="pos-name">причина удаления</label>
+          <span
+            *ngIf="form.get('delDesc')?.invalid && form.get('delDesc')?.touched"
+            class="helper-text red-text"
+          >
+          Необходимо указать причину удаления.
+        </span>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="modal-action waves-effect waves-black btn-flat"
+          [disabled]="form.disabled"
+        >
+          Отмена
+        </button>
+        <button
+          class="modal-action btn waves-effect red-text"
+          type="button"
+          (click)="deleteCategory()"
+          [disabled]="form.invalid || form.disabled"
+        >
+          Удалить
+        </button>
+      </div>
     </div>
   </form>
 

@@ -9,7 +9,7 @@ import {
   UsePipes,
   ValidationPipe,
   UseGuards,
-  UseInterceptors, UploadedFile,
+  UseInterceptors, UploadedFile, Req,
 } from '@nestjs/common';
 import { DepartsService } from './departs.service';
 import { CreateDepartDto } from './dto/create-depart.dto';
@@ -22,6 +22,9 @@ import { JwtAuthGuard } from '../../../auth/jwt-auth.guard';
 import { ObjectId } from 'mongoose';
 import { RemoveDepartDto } from './dto/remove-depart.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { RemoveTrashDto } from '../../../comCores/trashs/dto/remove-trash.dto';
+import { request } from 'express';
+
 
 @UsePipes(ValidationPipe)
 @UseGuards(JwtAuthGuard)
@@ -96,7 +99,11 @@ export class DepartsController {
   })
   @ApiResponse({ status: 200, type: Depart })
   @Delete(':id')
-  delete(@Param('id') id: ObjectId): Promise<Depart> {
-    return this.departsService.remove(id);
+
+  delete(
+         @Param('id') id: ObjectId,
+         @Body() dto: RemoveTrashDto ): Promise<Depart> {
+        // console.log(id, dto)
+    return this.departsService.remove(id, dto);
   }
 }

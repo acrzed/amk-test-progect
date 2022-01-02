@@ -16,6 +16,6 @@ export class DepartsPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.departs$ = this.departService.fetch();
+    this.departs$ = this.departService.allDept();
   }
 }

@@ -10,6 +10,8 @@ import { Trash, TrashDocument } from '../../../comCores/trashs/entities/trash.en
 import { CreateDepartDto } from './dto/create-depart.dto';
 import { UpdateDepartDto } from './dto/update-depart.dto';
 import { FileService, FileType } from '../../../file/file.service';
+import { RemoveTrashDto } from '../../../comCores/trashs/dto/remove-trash.dto';
+import { JwtService } from '@nestjs/jwt';
 
 
 @Injectable()
@@ -18,7 +20,8 @@ export class DepartsService {
     @InjectModel(Depart.name) private departmentDB: Model<DepartDocument>,
     @InjectModel(User.name) private userDB: Model<UserDocument>,
     @InjectModel(Trash.name) private trashDB: Model<TrashDocument>,
-    private fileService: FileService) {
+    private fileService: FileService,
+    private jwtService: JwtService) {
   }
 
   async create(createDepartDto: CreateDepartDto, image): Promise<Depart> {
@@ -109,8 +112,11 @@ export class DepartsService {
 
   }
 
-  async remove(id: ObjectId) {
-    console.log('server: remove - ', id);
+  async remove(id: ObjectId, dto: RemoveTrashDto) {
+    console.log('server: remove - ', id, '\n', dto,);
+
+    const token = this.jwtEncode(dto.token)
+    console.log(token)
     let delDept;
     try {
       delDept = await this.departmentDB.findById(id);
@@ -147,5 +153,28 @@ export class DepartsService {
     // }catch (e) {
     //   console.log(e)
     // }
+  }
+
+  jwtEncode(reqToken: string){
+
+       return this.jwtService.decode(reqToken)
+
+        //   reqToken.split(' ')[1],
+        //   tokenKey,
+        //   (err, payload) => {
+        //     if (err) next()
+        //     else if (payload) {
+        //       for (let user of users) {
+        //         if (user.id === payload.id) {
+        //           req.user = user
+        //           next()
+        //         }
+        //       }
+        //
+        //       if (!req.user) next()
+        //     }
+        //   }
+        // )
+
   }
 }
